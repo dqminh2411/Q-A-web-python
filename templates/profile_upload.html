@@ -10,19 +10,25 @@
 
                 <form action="/upload" method="POST" enctype="multipart/form-data">
                     {% csrf_token %}
+                    <!-- Tiêu đề -->
                     <div class="mb-3">
-                        <img src="{% static 'css/upload.png' %}" alt="" class="m-1">
-
-                        <label for="recipient-name" class="col-form-label">Photo</label>
-                        <input type="file" name="image_upload" class="form-control" id="recipient-name">
-
+                        <label for="title" class="col-form-label">Title</label>
+                        <textarea class="form-control" name="title" id="title" placeholder="Enter title..." required></textarea>
                     </div>
+                    
+                    <!-- Ảnh bài đăng -->
                     <div class="mb-3">
-                        <label for="message-text" class="col-form-label">Caption</label>
-                        <textarea class="form-control" name="caption" placeholder="Caption..."
-                            id="message-text"></textarea>
+                        <img src="{% static 'css/upload.png' %}" alt="Upload icon" class="m-1">
+                        <label for="image-upload" class="col-form-label">Photo</label>
+                        <input type="file" name="image_upload" class="form-control" id="image-upload" required>
                     </div>
 
+                    <!-- Caption -->
+                    <div class="mb-3">
+                        <label for="caption" class="col-form-label">Caption lala </label>
+                        <textarea class="form-control" name="caption" id="caption" placeholder="Enter caption..." required></textarea>
+                    </div>
+                    
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

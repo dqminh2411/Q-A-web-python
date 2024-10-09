@@ -11,7 +11,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
-    <title>Explore</title>
+    <title>Detail</title>
     <link rel="stylesheet" href="{% static 'css/app.css' %}">
     <style>
         /* Custom styles for the sidebar */
@@ -158,9 +158,9 @@
                     <div class="row row-cols-3">
                         {% for pos in post %}
                         <div class="col m-2 " style="margin-bottom:10px;">
-{#                            <h5><a href="{% url '/postdetail'  %}"> style="margin-top: 10px;"><strong>Title:</strong> {{pos.title}}</a></h5>#}
-                            <h5 style="margin-top: 10px;"><a href="{% url '/postdetail' %}"><strong>Title:</strong> {{ pos.title }}</a></h5>
-                            <h5 style="margin-top: 10px;">caption: {{ pos.caption|slice:":50" }}</h5>
+                            <h5 style="margin-top: 10px;"><strong>Title:</strong> {{pos.title}}</h5>
+                            
+                            <h5 style="margin-top: 10px;">caption: {{ pos.caption }}</h5>
                             
                         </div>
                         {% endfor %}

@@ -89,10 +89,11 @@ def upload(request):
 
     if request.method == 'POST':
         user = request.user.username
+        title = request.POST['title']
         image = request.FILES.get('image_upload')
         caption = request.POST['caption']
 
-        new_post = Post.objects.create(user=user, image=image, caption=caption)
+        new_post = Post.objects.create(user=user,title=title, image=image, caption=caption)
         new_post.save()
 
         return redirect('/')
@@ -133,7 +134,19 @@ def explore(request):
         
     }
     return render(request, 'explore.html',context)
-    
+
+
+@login_required(login_url='/loginn')
+def postdetail(request):
+    post = Post.objects.all().order_by('-created_at')
+    profile = Profile.objects.get(user=request.user)
+
+    context = {
+        'post': post,
+        'profile': profile
+
+    }
+    return render(request, 'postdetail.html', context)
 @login_required(login_url='/loginn')
 def profile(request,id_user):
     user_object = User.objects.get(username=id_user)
