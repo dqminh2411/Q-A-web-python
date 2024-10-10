@@ -23,6 +23,7 @@ class Post(models.Model):
     title = models.TextField(null=True, blank=True)
     image = models.ImageField(upload_to='post_images')
     caption = models.TextField()
+    subject = models.CharField(max_length=50, default="Math")
     created_at = models.DateTimeField(default=datetime.now)
     no_of_likes = models.IntegerField(default=0)
 

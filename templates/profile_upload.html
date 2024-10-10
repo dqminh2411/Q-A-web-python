@@ -8,33 +8,72 @@
             </div>
             <div class="modal-body">
 
-                <form action="/upload" method="POST" enctype="multipart/form-data">
+                <form id="postForm" action="/upload" method="POST" enctype="multipart/form-data">
                     {% csrf_token %}
                     <!-- Tiêu đề -->
                     <div class="mb-3">
                         <label for="title" class="col-form-label">Title</label>
-                        <textarea class="form-control" name="title" id="title" placeholder="Enter title..." required></textarea>
+                        <textarea class="form-control" name="title" id="title" placeholder="Enter title..."
+                                  required></textarea>
                     </div>
-                    
+
                     <!-- Ảnh bài đăng -->
-                    <div class="mb-3">
-                        <img src="{% static 'css/upload.png' %}" alt="Upload icon" class="m-1">
-                        <label for="image-upload" class="col-form-label">Photo</label>
-                        <input type="file" name="image_upload" class="form-control" id="image-upload" required>
+                    <div class="row">
+                        <!-- Khu vực tải ảnh -->
+                        <div class="col-md-8 mb-3">
+                            <img src="{% static 'css/upload.png' %}" alt="Upload icon" class="m-1">
+                            <label for="image-upload" class="col-form-label">Photo</label>
+                            <input type="file" name="image_upload" class="form-control" id="image-upload" required>
+                        </div>
+
+                        <!-- Lựa chọn môn học (thanh điều hướng) -->
+                        <div class="col-md-4 mb-3">
+                            <label for="subject" class="col-form-label" style="margin-bottom: 18px;" >Môn học</label>
+                            <select class="form-control " name="subject" id="subject" required >
+                                <option value="" disabled selected>Chọn 1 môn học</option>
+                                <option value="Math">Math</option>
+                                <option value="Science">Science</option>
+                                <option value="History">History</option>
+                                <option value="English">English</option>
+                                <option value="Geography">Geography</option>
+                                <option value="Art">Art</option>
+                                <option value="Music">Music</option>
+                                <option value="Physical Education">Physical Education</option>
+                                <option value="Biology">Biology</option>
+                                <option value="Chemistry">Chemistry</option>
+                                <option value="Physics">Physics</option>
+                            </select>
+                            <small id="subjectError" style="color: red; display: none;">Vui lòng chọn một môn
+                                học.</small>
+                        </div>
                     </div>
 
                     <!-- Caption -->
                     <div class="mb-3">
-                        <label for="caption" class="col-form-label">Caption lala </label>
-                        <textarea class="form-control" name="caption" id="caption" placeholder="Enter caption..." required></textarea>
+                        <label for="caption" class="col-form-label">Caption</label>
+                        <textarea class="form-control" name="caption" id="caption" placeholder="Enter caption..."
+                                  required></textarea>
                     </div>
-                    
+
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 <button type="submit" class="btn btn-primary">Create Post</button>
             </div>
             </form>
+            <script>
+                document.getElementById('postForm').addEventListener('submit', function (event) {
+                    const subjectField = document.getElementById('subject');
+                    const subjectError = document.getElementById('subjectError');
+
+                    if (subjectField.value === "") {
+                        event.preventDefault();  // Ngăn không cho form gửi
+                        subjectError.style.display = 'block';  // Hiển thị cảnh báo
+                    } else {
+                        subjectError.style.display = 'none';  // Ẩn cảnh báo nếu đã chọn môn học
+                    }
+                });
+            </script>
         </div>
     </div>
 </div>

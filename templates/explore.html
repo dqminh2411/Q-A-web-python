@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://kit.fontawesome.com/cb792c0850.js" crossorigin="anonymous"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
     <title>Explore</title>
     <link rel="stylesheet" href="{% static 'css/app.css' %}">
@@ -66,10 +66,7 @@
         }
 
 
-
-
-
-        .image__overlay>* {
+        .image__overlay > * {
             transform: translateY(20px);
             transition: transform 0.25s;
         }
@@ -78,11 +75,11 @@
             opacity: 1;
         }
 
-        .image__overlay:hover>* {
+        .image__overlay:hover > * {
             transform: translateY(0);
         }
 
-        .image_s:hover .image__img  {
+        .image_s:hover .image__img {
             opacity: 0.1;
 
         }
@@ -101,78 +98,108 @@
 
 <body>
 
-    {% load static %}
+{% load static %}
 
-    <div class="container-fluid">
-        <div class="row">
-            <nav class="col-md-2 d-none d-md-block sidebar" style="position: fixed;">
-                <div class="text-center mt-3">
-                    <img src="{{profile.profileimg.url}}" alt="Profile Picture" class="profile-pic">
-                    <h4 class="mt-2"><a href="/profile/{{user}}" style="text-decoration:none;">@{{user}}</a></h4>
-                </div>
-                <ul class="nav flex-column mt-4">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="/">
-                            <i class="fa-solid fa-house mr-1"></i> Home
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/explore">
-                            <i class="fa-solid fa-compass mr-1"></i> Explore
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#exampleModal3">
-                            <i class="fa-solid fa-magnifying-glass mr-1"></i> Search
-                        </a>
-                    </li>
+<div class="container-fluid">
+    <div class="row">
+        <nav class="col-md-2 d-none d-md-block sidebar" style="position: fixed;">
+            <div class="text-center mt-3">
+                <img src="{{ profile.profileimg.url }}" alt="Profile Picture" class="profile-pic">
+                <h4 class="mt-2"><a href="/profile/{{ user }}" style="text-decoration:none;">@{{ user }}</a></h4>
+            </div>
+            <ul class="nav flex-column mt-4">
+                <li class="nav-item">
+                    <a class="nav-link active" href="/">
+                        <i class="fa-solid fa-house mr-1"></i> Home
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/explore">
+                        <i class="fa-solid fa-compass mr-1"></i> Explore
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#exampleModal3">
+                        <i class="fa-solid fa-magnifying-glass mr-1"></i> Search
+                    </a>
+                </li>
 
-                    <li class="nav-item">
-                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#exampleModal"
-                            data-bs-whatever="@getbootstrap">
-                            <i class="fa-solid fa-circle-plus mr-1"></i> Create Post
-                        </a>
-
-
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/profile/{{profile.user}}">
-                            <i class="fa-solid fa-user mr-1"></i> Profile
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/logoutt">
-                            <i class="fa-solid fa-right-from-bracket mr-1"></i> Logout
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-
-            <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
-
-                {% include "modal.html" %}
-                {% include "search.html" %}
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#exampleModal"
+                       data-bs-whatever="@getbootstrap">
+                        <i class="fa-solid fa-circle-plus mr-1"></i> Create Post
+                    </a>
 
 
-                <div class="container text-center" style="padding: 10px; margin-top:20px;">
-                    <div class="row row-cols-3">
-                        {% for pos in post %}
-                        <div class="col m-2 " style="margin-bottom:10px;">
-{#                            <h5><a href="{% url '/postdetail'  %}"> style="margin-top: 10px;"><strong>Title:</strong> {{pos.title}}</a></h5>#}
-                            <h5 style="margin-top: 10px;"><a href="{% url '/postdetail' %}"><strong>Title:</strong> {{ pos.title }}</a></h5>
-                            <h5 style="margin-top: 10px;">caption: {{ pos.caption|slice:":50" }}</h5>
-                            
-                        </div>
-                        {% endfor %}
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/profile/{{ profile.user }}">
+                        <i class="fa-solid fa-user mr-1"></i> Profile
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/logoutt">
+                        <i class="fa-solid fa-right-from-bracket mr-1"></i> Logout
+                    </a>
+                </li>
+            </ul>
+        </nav>
 
-                    </div>
-                </div>
-            </main>
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+
+            {% include "modal.html" %}
+            {% include "search.html" %}
+
+
+            <div class="container text-center" style="padding: 10px; margin-top:20px;">
+                <div class="row">
+                    {% for pos in post %}
+                        <div class="col-12" style="margin-bottom:20px;">
+                            <!-- Khung cho mỗi bài post -->
+                            <div class="card" style="padding: 15px; border: 1px solid #ddd; border-radius: 10px;">
+    <div class="row">
+        <!-- Cột bên trái hiển thị số lượt thích và môn học -->
+        <div class="col-md-3" style="border-right: 1px solid #ddd;">
+            <!-- Hiển thị số lượt thích -->
+            <h6 style="margin-top: 10px;">
+                <strong>Likes:</strong> {{ pos.no_of_likes }}
+            </h6>
+
+            <!-- Hiển thị môn học -->
+            <h6 style="margin-top: 10px;">
+                <strong>Subject:</strong> {{ pos.subject }}
+            </h6>
+        </div>
+
+        <!-- Cột bên phải hiển thị tiêu đề và chú thích -->
+        <div class="col-md-9">
+            <!-- Tiêu đề bài viết -->
+            <h5 style="margin-top: 10px;">
+                <a href="{% url 'postdetail' pos.id %}"  style="text-decoration:none; color:#007bff;">
+                    <strong>Title:</strong> {{ pos.title }}
+                </a>
+            </h5>
+
+            <!-- Hiển thị phần caption (giới hạn 50 ký tự) -->
+            <h5 style="margin-top: 10px;">
+                Caption: {{ pos.caption|slice:":50" }}...
+            </h5>
         </div>
     </div>
+</div>
 
-    <script src="{% static 'js/app.js'%}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+
+        </main>
+    </div>
+</div>
+
+<script src="{% static 'js/app.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
 </body>

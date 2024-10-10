@@ -37,7 +37,7 @@
 <body>
 <!-- this a modal code -->
 <div class="container-fluid">
-    
+
     <div class="row">
         <nav class="col-md-2 d-none d-md-block sidebar" style="position: fixed;">
             <div class="text-center mt-3">
@@ -83,38 +83,45 @@
         </nav>
         <!-- this is the main content code -->
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
-            <!-- Your main content goes here -->
-
             {% include "modal.html" %}
             {% include "search.html" %}
 
-            <!-- home posts code -->
+            <!-- Home posts code -->
             <div>
                 {% for pos in post %}
-                    <div class="container" id="{{ pos.id }}">
+
+
+                    <div class="container mb-4" id="{{ pos.id }}">
                         <div class="row">
+
                             <div class="col-md-6 mx-auto">
-                                <div class="post-card" style="border: 1px solid black; margin: 50px;">
+                                <div class="post-card border shadow-sm" style="margin: 25px; border-radius: 10px;">
                                     <!-- Kiểm tra xem có hình ảnh hay không -->
+
                                     {% if pos.image %}
                                         <img src="{{ pos.image.url }}" alt="Post Image" class="post-image"
-                                             style="height: 584px; width:468px; margin: 25px;">
+                                             style="height: 300px; width: 100%; object-fit: cover; border-radius: 10px 10px 0 0;">
                                     {% else %}
-                                        <!-- Nếu không có hình ảnh, có thể bỏ trống hoặc thêm nội dung khác -->
                                         <div class="post-image"
-                                             style="height: 584px; width:468px; margin: 25px; background-color: #f0f0f0;">
-                                            <!-- Bạn có thể thêm một hình ảnh placeholder hoặc giữ nguyên khung trống -->
+                                             style="height: 300px; width: 100%; margin: 25px; background-color: #f0f0f0; border-radius: 10px 10px 0 0;">
+                                            <!-- Placeholder for image -->
                                         </div>
                                     {% endif %}
+                                    <h5 style="margin-left: 15px; margin-top: 10px;">
+                                        <a href="/profile/{{ pos.user }}"
+                                           style="text-decoration: none;">@{{ pos.user }}</a>
+                                    </h5>
 
-                                    <div class="post-content" style="margin-left: 19px;">
-                                        <h5><a href="/profile/{{ pos.user }}"
-                                               style="text-decoration: none;">@{{ pos.user }}</a></h5>
-                                        <p>{{ pos.caption }}</p>
+                                    <div class="post-content p-3">
+                                        <h5>
+                                            <a href="{% url 'postdetail' pos.id %}"
+                                               style="text-decoration: none; color: #007bff;">
+                                                {{ pos.title }}
+                                            </a>
+                                        </h5>
                                         <p class="text-muted">{{ pos.created_at }}</p>
                                         <hr>
-                                        <div class="d-flex justify-content-between"
-                                             style="margin-bottom: 8px; margin-right:10px;">
+                                        <div class="d-flex justify-content-between" style="margin-bottom: 8px;">
                                             <a href="/like-post/{{ pos.id }}" class="btn btn-outline-primary">Like</a>
                                             {% if pos.no_of_likes == 0 %}
                                                 <p>0</p>
@@ -131,8 +138,8 @@
                     </div>
                 {% endfor %}
             </div>
-        
         </main>
+
     </div>
 </div>
 
