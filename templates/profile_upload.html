@@ -3,7 +3,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">New Post</h1>
+                <h1 class="modal-title fs-5" id="exampleModalLabel"><strong>New Post</strong></h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -12,7 +12,7 @@
                     {% csrf_token %}
                     <!-- Tiêu đề -->
                     <div class="mb-3">
-                        <label for="title" class="col-form-label">Title</label>
+                        <label for="title" class="col-form-label"><strong>Title :</strong></label>
                         <textarea class="form-control" name="title" id="title" placeholder="Enter title..."
                                   required></textarea>
                     </div>
@@ -22,15 +22,15 @@
                         <!-- Khu vực tải ảnh -->
                         <div class="col-md-8 mb-3">
                             <img src="{% static 'css/upload.png' %}" alt="Upload icon" class="m-1">
-                            <label for="image-upload" class="col-form-label">Photo</label>
+                            <label for="image-upload" class="col-form-label"><strong>Photo :</strong></label>
                             <input type="file" name="image_upload" class="form-control" id="image-upload" required>
                         </div>
 
                         <!-- Lựa chọn môn học (thanh điều hướng) -->
                         <div class="col-md-4 mb-3">
-                            <label for="subject" class="col-form-label" style="margin-bottom: 18px;" >Môn học</label>
+                            <label for="subject" class="col-form-label" style="margin-bottom: 18px;" ><strong>Subject :</strong></label>
                             <select class="form-control " name="subject" id="subject" required >
-                                <option value="" disabled selected>Chọn 1 môn học</option>
+                                <option value="" disabled selected>Choose a subject.</option>
                                 <option value="Math">Math</option>
                                 <option value="Science">Science</option>
                                 <option value="History">History</option>
@@ -43,14 +43,13 @@
                                 <option value="Chemistry">Chemistry</option>
                                 <option value="Physics">Physics</option>
                             </select>
-                            <small id="subjectError" style="color: red; display: none;">Vui lòng chọn một môn
-                                học.</small>
+                            <small id="subjectError" style="color: red; display: none;">Please choose a subject.</small>
                         </div>
                     </div>
 
                     <!-- Caption -->
                     <div class="mb-3">
-                        <label for="caption" class="col-form-label">Caption</label>
+                        <label for="caption" class="col-form-label"><strong>Detailed Description :</strong></label>
                         <textarea class="form-control" name="caption" id="caption" placeholder="Enter caption..."
                                   required></textarea>
                     </div>

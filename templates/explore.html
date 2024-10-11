@@ -22,7 +22,7 @@
         }
 
         .sidebar {
-            background-color: #f8f9fa;
+            background: #ece4e4;
             height: 100vh;
             color: black;
         }
@@ -98,8 +98,6 @@
 
 <body>
 
-{% load static %}
-
 <div class="container-fluid">
     <div class="row">
         <nav class="col-md-2 d-none d-md-block sidebar" style="position: fixed;">
@@ -113,30 +111,32 @@
                         <i class="fa-solid fa-house mr-1"></i> Home
                     </a>
                 </li>
+                <hr>
                 <li class="nav-item">
                     <a class="nav-link" href="/explore">
                         <i class="fa-solid fa-compass mr-1"></i> Explore
                     </a>
                 </li>
+                <hr>
                 <li class="nav-item">
                     <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#exampleModal3">
                         <i class="fa-solid fa-magnifying-glass mr-1"></i> Search
                     </a>
                 </li>
-
+                <hr>
                 <li class="nav-item">
-                    <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#exampleModal"
+                    <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#exampleModal2"
                        data-bs-whatever="@getbootstrap">
                         <i class="fa-solid fa-circle-plus mr-1"></i> Create Post
                     </a>
-
-
                 </li>
+                <hr>
                 <li class="nav-item">
-                    <a class="nav-link" href="/profile/{{ profile.user }}">
+                    <a class="nav-link" href="/profile/{{ user }}">
                         <i class="fa-solid fa-user mr-1"></i> Profile
                     </a>
                 </li>
+                <hr>
                 <li class="nav-item">
                     <a class="nav-link" href="/logoutt">
                         <i class="fa-solid fa-right-from-bracket mr-1"></i> Logout
@@ -149,7 +149,7 @@
 
             {% include "modal.html" %}
             {% include "search.html" %}
-
+            {% include "profile_upload.html" %}
 
             <div class="container text-center" style="padding: 10px; margin-top:20px;">
                 <div class="row">
@@ -157,36 +157,37 @@
                         <div class="col-12" style="margin-bottom:20px;">
                             <!-- Khung cho mỗi bài post -->
                             <div class="card" style="padding: 15px; border: 1px solid #ddd; border-radius: 10px;">
-    <div class="row">
-        <!-- Cột bên trái hiển thị số lượt thích và môn học -->
-        <div class="col-md-3" style="border-right: 1px solid #ddd;">
-            <!-- Hiển thị số lượt thích -->
-            <h6 style="margin-top: 10px;">
-                <strong>Likes:</strong> {{ pos.no_of_likes }}
-            </h6>
+                                <div class="row">
+                                    <!-- Cột bên trái hiển thị số lượt thích và môn học -->
+                                    <div class="col-md-3" style="border-right: 1px solid #ddd;">
+                                        <!-- Hiển thị số lượt thích -->
+                                        <h6 style="margin-top: 10px;">
+                                            <strong>Likes:</strong> {{ pos.no_of_likes }}
+                                        </h6>
 
-            <!-- Hiển thị môn học -->
-            <h6 style="margin-top: 10px;">
-                <strong>Subject:</strong> {{ pos.subject }}
-            </h6>
-        </div>
+                                        <!-- Hiển thị môn học -->
+                                        <h6 style="margin-top: 10px;">
+                                            <strong>Subject:</strong> {{ pos.subject }}
+                                        </h6>
+                                    </div>
 
-        <!-- Cột bên phải hiển thị tiêu đề và chú thích -->
-        <div class="col-md-9">
-            <!-- Tiêu đề bài viết -->
-            <h5 style="margin-top: 10px;">
-                <a href="{% url 'postdetail' pos.id %}"  style="text-decoration:none; color:#007bff;">
-                    <strong>Title:</strong> {{ pos.title }}
-                </a>
-            </h5>
+                                    <!-- Cột bên phải hiển thị tiêu đề và chú thích -->
+                                    <div class="col-md-9">
+                                        <!-- Tiêu đề bài viết -->
+                                        <h5 style="margin-top: 10px;">
+                                            <a href="{% url 'postdetail' pos.id %}"
+                                               style="text-decoration:none; color:#007bff;">
+                                                <strong>Title:</strong> {{ pos.title }}
+                                            </a>
+                                        </h5>
 
-            <!-- Hiển thị phần caption (giới hạn 50 ký tự) -->
-            <h5 style="margin-top: 10px;">
-                Caption: {{ pos.caption|slice:":50" }}...
-            </h5>
-        </div>
-    </div>
-</div>
+                                        <!-- Hiển thị phần caption (giới hạn 50 ký tự) -->
+                                        <h5 style="margin-top: 10px;">
+                                            Caption: {{ pos.caption|slice:":50" }}...
+                                        </h5>
+                                    </div>
+                                </div>
+                            </div>
 
                         </div>
                     {% endfor %}

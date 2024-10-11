@@ -10,9 +10,6 @@ urlpatterns = [
     path('signup/',views.signup),
     path('logoutt/',views.logoutt),
     path('upload',views.upload),
-
-
-
     path('like-post/<str:id>', views.likes, name='like-post'),
     path('#<str:id>', views.home_post),
     path('explore',views.explore),
@@ -22,10 +19,5 @@ urlpatterns = [
     path('delete/<str:id>', views.delete),
     path('search-results/', views.search_results, name='search_results'),
     path('follow', views.follow, name='follow'),
-    
-    
-    
-    
-    
     
 ]
