@@ -225,7 +225,7 @@ def search_results(request):
     query = request.GET.get('q')
 
     users = Profile.objects.filter(user__username__icontains=query)
-    posts = Post.objects.filter(caption__icontains=query)
+    posts = Post.objects.filter(Q(caption__icontains=query) | Q(title__icontains=query))
 
     context = {
         'query': query,
@@ -233,7 +233,6 @@ def search_results(request):
         'posts': posts,
     }
     return render(request, 'search_user.html', context)
-
 def home_post(request,id):
     post=Post.objects.get(id=id)
     profile = Profile.objects.get(user=request.user)
@@ -260,3 +259,18 @@ def follow(request):
             return redirect('/profile/'+user)
     else:
         return redirect('/')
+
+@login_required(login_url='/loginn')
+def search_by_subject(request):
+    query = request.GET.get('query', '')  # Get the search query from GET parameters
+    profile = Profile.objects.get(user=request.user)  # Get the user's profile
+
+    # Filter posts based on the subject
+    posts = Post.objects.filter(subject__icontains=query).order_by('-created_at')
+
+    context = {
+        'post': posts,  # Pass the filtered posts to the template
+        'profile': profile,
+        'query': query,  # Pass the search query for display
+    }
+    return render(request, 'explore.html', context)  # Render the explore template

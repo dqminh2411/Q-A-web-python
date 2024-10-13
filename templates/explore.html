@@ -150,7 +150,16 @@
             {% include "modal.html" %}
             {% include "search.html" %}
             {% include "profile_upload.html" %}
-
+        
+            <div class="container text-center" style="padding: 10px; margin-top:20px;">
+        <form method="GET" action="{% url 'search_by_subject' %}">
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" name="query" placeholder="Search by subject..." aria-label="Search">
+                <button class="btn btn-outline-secondary" type="submit">Search</button>
+            </div>
+        </form>
+    </div>
+        
             <div class="container text-center" style="padding: 10px; margin-top:20px;">
                 <div class="row">
                     {% for pos in post %}
