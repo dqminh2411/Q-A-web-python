@@ -4,7 +4,7 @@ from django.http import HttpResponse
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from . models import  Followers, LikePost, Post, Profile,Comment
+from . models import  Followers, LikePost, Post, Profile
 from django.db.models import Q
 from django.db import models
 
@@ -133,20 +133,20 @@ def postdetail(request, post_id):
     # Lấy thông tin hồ sơ của người dùng hiện tại
     profile = Profile.objects.get(user=request.user)
 
-    # Lấy danh sách các bình luận liên quan đến bài viết
-    comments = post.comments.all().order_by('-created_at')
+    # # Lấy danh sách các bình luận liên quan đến bài viết
+    # comments = post.comments.all().order_by('-created_at')
 
     # Xử lý khi người dùng gửi bình luận
-    if request.method == 'POST':
-        content = request.POST.get('content')
-        if content:
-            Comment.objects.create(post=post, user=request.user, content=content)
-            return redirect('postdetail', post_id=post.id)  # Reload lại trang
+    # if request.method == 'POST':
+    #     content = request.POST.get('content')
+    #     if content:
+    #         Comment.objects.create(post=post, user=request.user, content=content)
+    #         return redirect('postdetail', post_id=post.id)  # Reload lại trang
 
     context = {
         'post': post,
         'profile': profile,
-        'comments': comments,  # Truyền danh sách bình luận vào template
+        # 'comments': comments,  # Truyền danh sách bình luận vào template
     }
     return render(request, 'postdetail.html', context)
 

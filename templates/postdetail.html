@@ -169,35 +169,35 @@
                         </div>
 
                         <!-- Phần bình luận -->
-                        <div class="card mt-4">
-                            <div class="card-body">
-                                <h5 class="card-title">Comments</h5>
-
-                                <!-- Form để gửi bình luận -->
-                                <form method="POST" action="">
-                                    {% csrf_token %}
-                                    <div class="form-group">
-                                        <label for="content">Add a comment:</label>
-                                        <textarea name="content" class="form-control" rows="3" required></textarea>
-                                    </div>
-                                    <button type="submit" class="btn btn-primary mt-2">Submit</button>
-                                </form>
-
-                                <!-- Hiển thị danh sách bình luận -->
-                                <div class="comments-section mt-4">
-                                    {% for comment in comments %}
-                                        <div class="comment mb-3 p-2 border-bottom">
-                                            <!-- Tên người dùng sẽ là một liên kết tới trang profile của họ -->
-                                            <a href="/profile/{{ comment.user }}" style="text-decoration:none;">
-                                                <strong>@{{ comment.user}}</strong>
-                                            </a>
-                                            <p>{{ comment.content }}</p>
-                                            <small class="text-muted">{{ comment.created_at }}</small>
-                                        </div>
-                                    {% endfor %}
-                                </div>
-                            </div>
-                        </div>
+{#                        <div class="card mt-4">#}
+{#                            <div class="card-body">#}
+{#                                <h5 class="card-title">Comments</h5>#}
+{##}
+{#                                <!-- Form để gửi bình luận -->#}
+{#                                <form method="POST" action="">#}
+{#                                    {% csrf_token %}#}
+{#                                    <div class="form-group">#}
+{#                                        <label for="content">Add a comment:</label>#}
+{#                                        <textarea name="content" class="form-control" rows="3" required></textarea>#}
+{#                                    </div>#}
+{#                                    <button type="submit" class="btn btn-primary mt-2">Submit</button>#}
+{#                                </form>#}
+{##}
+{#                                <!-- Hiển thị danh sách bình luận -->#}
+{#                                <div class="comments-section mt-4">#}
+{#                                    {% for comment in comments %}#}
+{#                                        <div class="comment mb-3 p-2 border-bottom">#}
+{#                                            <!-- Tên người dùng sẽ là một liên kết tới trang profile của họ -->#}
+{#                                            <a href="/profile/{{ comment.user }}" style="text-decoration:none;">#}
+{#                                                <strong>@{{ comment.user}}</strong>#}
+{#                                            </a>#}
+{#                                            <p>{{ comment.content }}</p>#}
+{#                                            <small class="text-muted">{{ comment.created_at }}</small>#}
+{#                                        </div>#}
+{#                                    {% endfor %}#}
+{#                                </div>#}
+{#                            </div>#}
+{#                        </div>#}
 
                     </div>
                 </div>
