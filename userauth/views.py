@@ -75,14 +75,15 @@ def home(request):
 
 @login_required(login_url='/loginn')
 def upload(request):
-
     if request.method == 'POST':
         user = request.user.username
         title = request.POST['title']
-        image = request.FILES.get('image_upload')
+        file = request.FILES.get('file_upload')  # Lấy file từ form
         caption = request.POST['caption']
         subject = request.POST['subject']
-        new_post = Post.objects.create(user=user,title=title, image=image, caption=caption,subject=subject )
+
+        # Tạo bài viết mới với file
+        new_post = Post.objects.create(user=user, title=title, file=file, caption=caption, subject=subject)
         new_post.save()
 
         return redirect('/')

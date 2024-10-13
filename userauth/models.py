@@ -21,7 +21,7 @@ class Post(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     user = models.CharField(max_length=100)
     title = models.TextField(null=True, blank=True)
-    image = models.ImageField(upload_to='post_images')
+    file = models.FileField(upload_to='uploads/', null=True, blank=True)  # Sử dụng FileField cho tất cả loại file
     caption = models.TextField()
     subject = models.CharField(max_length=50, default="Math")
     created_at = models.DateTimeField(default=datetime.now)

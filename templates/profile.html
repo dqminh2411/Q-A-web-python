@@ -1,3 +1,4 @@
+{% load custom_filters %}
 {% load static %}
 
 <!DOCTYPE html>
@@ -127,7 +128,7 @@
                                                     data-bs-toggle="modal" data-bs-target="#exampleModal1"
                                                     data-bs-whatever="@getbootstrap"
                                                     style="z-index: 1; margin: 10px; padding: 10px 20px; border-radius: 8px; font-size: 16px; transition: background-color 0.3s ease, color 0.3s ease;">
-                                                <strong>Edit Profile </strong> 
+                                                <strong>Edit Profile </strong>
                                             </button>
 
                                         {% endif %}
@@ -175,7 +176,8 @@
                                 </div>
                                 <div class="card-body p-4 text-black">
                                     <div class="mb-3">
-                                        <p style="margin-top: 10px" class="lead fw-normal mb-1"> <strong>Contact :</strong></p>
+                                        <p style="margin-top: 10px" class="lead fw-normal mb-1"><strong>Contact
+                                            :</strong></p>
                                         <div class="p-4" style="background-color: #f8f9fa;">
                                             <p class="font-italic mb-1">{{ user_profile.bio }}</p>
                                         </div>
@@ -189,9 +191,21 @@
                                     <div class="image-grid">
                                         {% for pos in user_posts %}
                                             <div class="card image-item">
-                                                <img src="{{ pos.image.url }}" class="card-img-top" alt="..."
-                                                     style="width: 219px;height: 219px;margin-left: 28px">
-
+                                                {% if pos.file %}
+                                                    {% if pos.file.url|endswith_any:".jpg,.png,.jpeg" %}
+                                                        <!-- Hiển thị ảnh nếu là file ảnh -->
+                                                        <img src="{{ pos.file.url }}" alt="..."
+                                                             class="card-img-top"
+                                                             style="width: 219px;height: 219px;margin-left: 28px">
+                                                    {% else %}
+                                                        <!-- Hiển thị link tải về nếu là file khác (như PDF, Word) -->
+                                                        <a href="{{ pos.file.url }}" class="btn btn-primary"
+                                                           target="_blank">Download File</a>
+                                                    {% endif %}
+                                                {% else %}
+                                                    <p>No file uploaded for this post.</p>
+                                                    <!-- Thông báo không có tệp nào được tải lên -->
+                                                {% endif %}
                                                 <div class="card-body">
                                                     <h5 class="card-title">{{ pos.title }}</h5>
                                                     {% if user == user_profile.user %}

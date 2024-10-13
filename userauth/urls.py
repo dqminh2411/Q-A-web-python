@@ -20,4 +20,4 @@ urlpatterns = [
     path('search-results/', views.search_results, name='search_results'),
     path('follow', views.follow, name='follow'),
     
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
