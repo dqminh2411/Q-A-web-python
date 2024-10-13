@@ -105,8 +105,13 @@
                                                  style="height: 300px; width: 100%; object-fit: cover; border-radius: 10px 10px 0 0;">
                                         {% else %}
                                             <!-- Hiển thị link tải về nếu là file khác (như PDF, Word) -->
-                                            <a href="{{ pos.file.url }}" class="btn btn-primary" target="_blank">Download
-                                                File</a>
+                                            <div class="text-center"> <!-- Đây là lớp CSS để căn giữa -->
+                                                <a href="{{ pos.file.url }}" class="btn btn-danger btn-lg"
+                                                   style="width: 200px;" target="_blank">
+                                                    Download File
+                                                </a>
+                                            </div>
+
                                         {% endif %}
                                     {% endif %}
 
@@ -126,13 +131,13 @@
                                         <p class="text-muted">{{ pos.created_at }}</p>
                                         <hr>
                                         <div class="d-flex justify-content-between" style="margin-bottom: 8px;">
-                                            <a href="/like-post/{{ pos.id }}" class="btn btn-outline-primary">Like</a>
+                                            <a href="/like-post/{{ pos.id }}" class="btn btn-outline-primary">Vote</a>
                                             {% if pos.no_of_likes == 0 %}
                                                 <p>0</p>
                                             {% elif pos.no_of_likes == 1 %}
-                                                <p>Liked by {{ pos.no_of_likes }} person</p>
+                                                <p>Voted by {{ pos.no_of_likes }} person</p>
                                             {% else %}
-                                                <p>Liked by {{ pos.no_of_likes }} people</p>
+                                                <p>Voted by {{ pos.no_of_likes }} people</p>
                                             {% endif %}
                                         </div>
                                     </div>
