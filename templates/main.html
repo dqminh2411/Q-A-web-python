@@ -91,62 +91,62 @@
             {% include "profile_upload.html" %}
             <!-- Home posts code -->
             <div>
-                {% for pos in post %}
-                    <div class="container mb-4" id="{{ pos.id }}">
-                        <div class="row">
+    {% for pos in posts %}
+        <div class="container mb-4" id="{{ pos.id }}">
+            <div class="row">
 
-                            <div class="col-md-6 mx-auto">
-                                <div class="post-card border shadow-sm" style="margin: 25px; border-radius: 10px;">
+                <div class="col-md-6 mx-auto">
+                    <div class="post-card border shadow-sm" style="margin: 25px; border-radius: 10px;">
 
-                                    {% if pos.file %}
-                                        {% if pos.file.url|endswith_any:".jpg,.png,.jpeg" %}
-                                            <!-- Hiển thị ảnh nếu là file ảnh -->
-                                            <img src="{{ pos.file.url }}" alt="Uploaded Image" class="post-image"
-                                                 style="height: 300px; width: 100%; object-fit: cover; border-radius: 10px 10px 0 0;">
-                                        {% else %}
-                                            <!-- Hiển thị link tải về nếu là file khác (như PDF, Word) -->
-                                            <div class="text-center"> <!-- Đây là lớp CSS để căn giữa -->
-                                                <a href="{{ pos.file.url }}" class="btn btn-danger btn-lg"
-                                                   style="width: 200px;" target="_blank">
-                                                    Download File
-                                                </a>
-                                            </div>
-
-                                        {% endif %}
-                                    {% endif %}
-
-
-                                    <h5 style="margin-left: 15px; margin-top: 10px;">
-                                        <a href="/profile/{{ pos.user }}"
-                                           style="text-decoration: none;">@{{ pos.user }}</a>
-                                    </h5>
-
-                                    <div class="post-content p-3">
-                                        <h5>
-                                            <a href="{% url 'postdetail' pos.id %}"
-                                               style="text-decoration: none; color: #007bff;">
-                                                {{ pos.title }}
-                                            </a>
-                                        </h5>
-                                        <p class="text-muted">{{ pos.created_at }}</p>
-                                        <hr>
-                                        <div class="d-flex justify-content-between" style="margin-bottom: 8px;">
-                                            <a href="/like-post/{{ pos.id }}" class="btn btn-outline-primary">Vote</a>
-                                            {% if pos.no_of_likes == 0 %}
-                                                <p>0</p>
-                                            {% elif pos.no_of_likes == 1 %}
-                                                <p>Voted by {{ pos.no_of_likes }} person</p>
-                                            {% else %}
-                                                <p>Voted by {{ pos.no_of_likes }} people</p>
-                                            {% endif %}
-                                        </div>
-                                    </div>
+                        {% if pos.file %}
+                            {% if pos.file.url|endswith_any:".jpg,.png,.jpeg" %}
+                                <!-- Hiển thị ảnh nếu là file ảnh -->
+                                <img src="{{ pos.file.url }}" alt="Uploaded Image" class="post-image"
+                                     style="height: 300px; width: 100%; object-fit: cover; border-radius: 10px 10px 0 0;">
+                            {% else %}
+                                <!-- Hiển thị link tải về nếu là file khác (như PDF, Word) -->
+                                <div class="text-center"> <!-- Đây là lớp CSS để căn giữa -->
+                                    <a href="{{ pos.file.url }}" class="btn btn-danger btn-lg"
+                                       style="width: 200px;" target="_blank">
+                                        Download File
+                                    </a>
                                 </div>
+
+                            {% endif %}
+                        {% endif %}
+
+                        <h5 style="margin-left: 15px; margin-top: 10px;">
+                            <a href="/profile/{{ pos.user }}"
+                               style="text-decoration: none;">@{{ pos.user }}</a>
+                        </h5>
+
+                        <div class="post-content p-3">
+                            <h5>
+                                <a href="{% url 'postdetail' pos.id %}"
+                                   style="text-decoration: none; color: #007bff;">
+                                    {{ pos.title }}
+                                </a>
+                            </h5>
+                            <p class="text-muted">{{ pos.created_at }}</p>
+                            <hr>
+                            <div class="d-flex justify-content-between" style="margin-bottom: 8px;">
+                                <a href="/like-post/{{ pos.id }}" class="btn btn-outline-primary">Vote</a>
+                                {% if pos.no_of_likes == 0 %}
+                                    <p>0</p>
+                                {% elif pos.no_of_likes == 1 %}
+                                    <p>Voted by {{ pos.no_of_likes }} person</p>
+                                {% else %}
+                                    <p>Voted by {{ pos.no_of_likes }} people</p>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
-                {% endfor %}
+                </div>
             </div>
+        </div>
+    {% endfor %}
+</div>
+
         </main>
 
     </div>

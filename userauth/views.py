@@ -56,22 +56,33 @@ def logoutt(request):
     return redirect('/loginn')
 
 @login_required(login_url='/loginn')
+@login_required(login_url='/loginn')
 def home(request):
-    
-    following_users = Followers.objects.filter(follower=request.user.username).values_list('user', flat=True)
+    # Lấy tất cả các bài viết, sắp xếp theo lượt vote giảm dần (no_of_likes)
+    posts = Post.objects.all().order_by('-no_of_likes')
 
-    
-    post = Post.objects.filter(Q(user=request.user.username) | Q(user__in=following_users)).order_by('-created_at')
+    # Lấy thông tin hồ sơ của người dùng hiện tại
+    profile = Profile.objects.get(user=request.user)
 
+    # Truyền dữ liệu vào context để hiển thị trong template
+    context = {
+        'posts': posts,  # Chuyển đổi từ 'post' thành 'posts' vì giờ có nhiều bài viết hơn
+        'profile': profile,
+    }
+    return render(request, 'main.html', context)
+
+
+
+def explore(request):
+    post = Post.objects.all().order_by('-created_at')
     profile = Profile.objects.get(user=request.user)
 
     context = {
         'post': post,
-        'profile': profile,
-    }
-    return render(request, 'main.html',context)
-    
+        'profile': profile
 
+    }
+    return render(request, 'explore.html', context)
 
 @login_required(login_url='/loginn')
 def upload(request):
@@ -114,17 +125,6 @@ def likes(request, id):
         return redirect('/#'+id)
     
 @login_required(login_url='/loginn')
-def explore(request):
-    post=Post.objects.all().order_by('-created_at')
-    profile = Profile.objects.get(user=request.user)
-
-    context={
-        'post':post,
-        'profile':profile
-        
-    }
-    return render(request, 'explore.html',context)
-
 
 @login_required(login_url='/loginn')
 def postdetail(request, post_id):
