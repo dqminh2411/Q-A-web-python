@@ -23,7 +23,7 @@ class Post(models.Model):
     title = models.TextField(null=True, blank=True)
     file = models.FileField(upload_to='uploads/', null=True, blank=True)  # Sử dụng FileField cho tất cả loại file
     caption = models.TextField()
-    subject = models.CharField(max_length=50, default="Math")
+    subject = models.CharField(max_length=50, default="HDT")
     created_at = models.DateTimeField(default=datetime.now)
     no_of_likes = models.IntegerField(default=0)
 

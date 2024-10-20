@@ -23,7 +23,7 @@
                         <div class="col-md-8 mb-3">
                             <img src="{% static 'css/upload.png' %}" alt="Upload icon" class="m-1">
                             <label for="image-upload" class="col-form-label"><strong>Photo or File :</strong></label>
-                            <input type="file" name="file_upload" class="form-control" id="file-upload" required>
+                            <input type="file" name="file_upload" class="form-control" id="file-upload" >
                         </div>
 
                         <!-- Lựa chọn môn học (thanh điều hướng) -->
@@ -31,11 +31,15 @@
                             <label for="subject" class="col-form-label" style="margin-bottom: 18px;" ><strong>Subject :</strong></label>
                             <select class="form-control " name="subject" id="subject" required >
                                 <option value="" disabled selected>Choose a subject.</option>
-                                <option value="Math">Math</option>
-                                <option value="Science">Science</option>
-                                <option value="History">History</option>
-                                <option value="English">English</option>
-                                <option value="Geography">Geography</option>
+                                <option value="Hướng Đối Tượng">Hướng Đối Tượng</option>
+                                <option value="Lịch Sử Đảng">Lịch Sử Đảng</option>
+                                <option value="Toán Rời Rạc II">Toán Rời Rạc II</option>
+                                <option value="Tư Tưởng Hồ Chí Minh">Tư Tưởng Hồ Chí Minh</option>
+                                <option value="Python">Python</option>
+                                <option value="Mạng Máy Tính">Mạng Máy Tính</option>
+                                <option value="Hệ Điều Hành">Hệ Điều Hành</option>
+                                <option value="Lý Thuyết Thông Tin">Lý Thuyết Thông Tin</option>
+                                <option value="Kiến Trúc Máy Tính">Kiến Trúc Máy Tính</option>
                             </select>
                             <small id="subjectError" style="color: red; display: none;">Please choose a subject.</small>
                         </div>
