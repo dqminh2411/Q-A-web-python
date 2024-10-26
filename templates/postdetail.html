@@ -167,8 +167,6 @@
                                         <a href="{{ post.file.url }}" class="btn btn-primary"
                                            target="_blank">Download File</a>
                                     {% endif %}
-                                {% else %}
-                                    <p>No file uploaded for this post.</p>
                                 {% endif %}
 
                                 <h5 class="mt-3"><strong>Title:</strong> {{ post.title }}</h5>
@@ -179,6 +177,7 @@
                                     <span class="text-muted">Votes: {{ post.no_of_likes }}</span>
                                     <span class="text-muted">Subject: {{ post.subject }}</span>
                                 </div>
+                                <!-- <a href="/like-post/{{ pos.id }}" class="btn btn-outline-primary">Vote</a> -->
                             </div>
                         </div>
                         <!-- Phần bình luận -->

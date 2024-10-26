@@ -202,12 +202,15 @@
                                                         <a href="{{ pos.file.url }}" class="btn btn-primary"
                                                            target="_blank">Download File</a>
                                                     {% endif %}
-                                                {% else %}
-                                                    <p>No file uploaded for this post.</p>
-                                                    <!-- Thông báo không có tệp nào được tải lên -->
+                                                
                                                 {% endif %}
                                                 <div class="card-body">
-                                                    <h5 class="card-title">{{ pos.title }}</h5>
+                                                    <h5 class="card-title">
+                                                        <a href="{% url 'postdetail' pos.id %}"
+                                                        style="text-decoration:none;">
+                                                            {{ pos.title }}
+                                                        </a>
+                                                    </h5>
                                                     {% if user == user_profile.user %}
                                                         <a href=" /delete/{{ pos.id }} "><i
                                                                 class="fa-solid fa-trash"></i></a>
