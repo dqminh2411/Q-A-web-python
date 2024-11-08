@@ -35,7 +35,7 @@ class LikePost(models.Model):
     username = models.CharField(max_length=100)
 
     def __str__(self):
-        return self.username
+        return self.username + " liked " + self.post_id
 
 class Followers(models.Model):
     follower = models.CharField(max_length=100)
@@ -48,7 +48,14 @@ class Comment(models.Model):
     user = models.CharField(max_length=100)
     content = models.TextField()
     created_at = models.DateTimeField(default=datetime.now)
+    no_of_likes = models.IntegerField(default=0)
+    def __str__(self):
+        return f"{self.user} commented on {self.post.title}"
+    
+class LikeComment(models.Model):
+    comment_id = models.IntegerField(null=False)
+    username = models.CharField(max_length=100)
 
     def __str__(self):
-        return f"{self.user.username} commented on {self.post.title}"
+        return self.username + " liked " + self.comment_id
     

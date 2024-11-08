@@ -11,7 +11,8 @@
     <script src="https://kit.fontawesome.com/cb792c0850.js" crossorigin="anonymous"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-
+    <!-- to use jQuery/Ajax in project -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <title>{{ user_profile.user }}</title>
     <link rel="stylesheet" href="{% static 'css/app.css' %}">
     <style>
@@ -61,7 +62,7 @@
 <div class="container-fluid">
     <div class="row">
         <nav class="col-md-2 d-none d-md-block sidebar" style="position: fixed;">
-            <div class="text-center mt-3">
+            <div class="text-center mt-3" style="height: 80px;">
                 <img src="{{ profile.profileimg.url }}" alt="Profile Picture" class="profile-pic">
                 <h4 class="mt-2"><a href="/profile/{{ user }}" style="text-decoration:none;">@{{ user }}</a></h4>
             </div>
@@ -88,6 +89,12 @@
                     <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#exampleModal2"
                        data-bs-whatever="@getbootstrap">
                         <i class="fa-solid fa-circle-plus mr-1"></i> Create Post
+                    </a>
+                </li>
+                <hr>
+                <li class="nav-item" style="height: 30px;">
+                    <a class="nav-link" href="/liked-posts/">
+                        <i class="fa fa-thumbs-up" aria-hidden="true"></i> Liked Posts
                     </a>
                 </li>
                 <hr>
@@ -192,7 +199,7 @@
                                         {% for pos in user_posts %}
                                             <div class="card image-item">
                                                 {% if pos.file %}
-                                                    {% if pos.file.url|endswith_any:".jpg,.png,.jpeg" %}
+                                                    {% if pos.file.url|endswith_any:".jpg,.png,.jpeg,.PNG,.JPG,.JPEG" %}
                                                         <!-- Hiển thị ảnh nếu là file ảnh -->
                                                         <img src="{{ pos.file.url }}" alt="..."
                                                              class="card-img-top"
@@ -212,9 +219,10 @@
                                                         </a>
                                                     </h5>
                                                     {% if user == user_profile.user %}
-                                                        <a href=" /delete/{{ pos.id }} "><i
-                                                                class="fa-solid fa-trash"></i></a>
-
+                                                    <a href="/postdetail/{{pos.id}}/" tyle="border:none; background: none;" ><i
+                                                        class="fas fa-edit"></i></a>
+                                                    <a href="/post/delete/{{pos.id}}" tyle="border:none; background: none;" ><i
+                                                        class="fa-solid fa-trash" onclick="return confirm('Do you want to delete this post?')"></i></a>
 
                                                     {% endif %}
                                                 </div>

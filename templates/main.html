@@ -11,7 +11,8 @@
     <script src="https://kit.fontawesome.com/cb792c0850.js" crossorigin="anonymous"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-
+    <!-- to use jQuery/Ajax in project -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <title>Social Media</title>
     <link rel="stylesheet" href="{% static 'css/app.css' %}">
     <style>
@@ -41,7 +42,7 @@
 
     <div class="row">
         <nav class="col-md-2 d-none d-md-block sidebar" style="position: fixed;">
-            <div class="text-center mt-3">
+            <div class="text-center mt-3" style="height: 80px;">
                 <img src="{{ profile.profileimg.url }}" alt="Profile Picture" class="profile-pic">
                 <h4 class="mt-2"><a href="/profile/{{ user }}" style="text-decoration:none;">@{{ user }}</a></h4>
             </div>
@@ -68,6 +69,12 @@
                     <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#exampleModal2"
                        data-bs-whatever="@getbootstrap">
                         <i class="fa-solid fa-circle-plus mr-1"></i> Create Post
+                    </a>
+                </li>
+                <hr>
+                <li class="nav-item" style="height: 30px;">
+                    <a class="nav-link" href="/liked-posts/">
+                        <i class="fa fa-thumbs-up" aria-hidden="true"></i> Liked Posts
                     </a>
                 </li>
                 <hr>
@@ -130,14 +137,18 @@
                             <p class="text-muted">{{ pos.created_at }}</p>
                             <hr>
                             <div class="d-flex justify-content-between" style="margin-bottom: 8px;">
-                                <a href="/like-post/{{ pos.id }}" class="btn btn-outline-primary">Vote</a>
-                                {% if pos.no_of_likes == 0 %}
-                                    <p>0</p>
+                                <form method="post" class="like-unlike-form" post-id="{{pos.id}}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-outline-primary like-unlike-btn" id="like-unlike-{{pos.id}}"></button>
+                                </form>
+                                
+                                <!-- {% if pos.no_of_likes == 0 %}
+                                    <p id="no-like">0</p>
                                 {% elif pos.no_of_likes == 1 %}
-                                    <p>Voted by {{ pos.no_of_likes }} person</p>
+                                    <p id="one-like">Voted by {{ pos.no_of_likes }} person</p>
                                 {% else %}
-                                    <p>Voted by {{ pos.no_of_likes }} people</p>
-                                {% endif %}
+                                    <p id="many-likes">Voted by {{ pos.no_of_likes }} people</p>
+                                {% endif %} -->
                             </div>
                         </div>
                     </div>
@@ -152,6 +163,7 @@
     </div>
 </div>
 
+<script src="{% static 'js/main.js' %}"></script>
 <script src="{% static 'js/app.js' %}"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"

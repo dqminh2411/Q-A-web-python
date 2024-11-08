@@ -1,46 +1,50 @@
 from itertools import chain
+import json
 from  django . shortcuts  import  get_object_or_404, render, redirect
 from django.http import HttpResponse
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from .models import Followers, LikePost, Post, Profile, Comment
+from .models import Followers, LikePost, Post, Profile, Comment, LikeComment
 from django.db.models import Q
 from django.db import models
+from django.http import JsonResponse
+from django.forms.models import model_to_dict
 
 def signup(request):
- try:
-    if request.method == 'POST':
-        fnm=request.POST.get('fnm')
-        emailid=request.POST.get('emailid')
-        pwd=request.POST.get('pwd')
-        print(fnm,emailid,pwd)
-        my_user=User.objects.create_user(fnm,emailid,pwd)
-        my_user.save()
-        user_model = User.objects.get(username=fnm)
-        new_profile = Profile.objects.create(user=user_model, id_user=user_model.id)
-        new_profile.save()
-        if my_user is not None:
-            login(request,my_user)
-            return redirect('/')
-        return redirect('/loginn')
+    try:
+        if request.method == 'POST':
+            fnm=request.POST.get('fnm')
+            emailid=request.POST.get('emailid')
+            pwd=request.POST.get('pwd')
+            print(fnm,emailid,pwd)
+            my_user=User.objects.create_user(fnm,emailid,pwd)
+            my_user.save()
+            user_model = User.objects.get(username=fnm)
+            new_profile = Profile.objects.create(user=user_model, id_user=user_model.id)
+            new_profile.save()
+            if my_user is not None:
+                login(request,my_user)
+                return redirect('/')
+            return redirect('/loginn')
+        
+            
+    except:
+            invalid="User already exists"
+            return render(request, 'signup.html',{'invalid':invalid})
     
         
- except:
-        invalid="User already exists"
-        return render(request, 'signup.html',{'invalid':invalid})
-  
-    
- return render(request, 'signup.html')
+    return render(request, 'signup.html')
 
 def loginn(request):
  
-  if request.method == 'POST':
+    if request.method == 'POST':
         fnm=request.POST.get('fnm')
         pwd=request.POST.get('pwd')
         print(fnm,pwd)
         userr=authenticate(request,username=fnm,password=pwd)
         if userr is not None:
+            print('có user', userr)
             login(request,userr)
             return redirect('/')
         
@@ -48,21 +52,28 @@ def loginn(request):
         invalid="Invalid Credentials"
         return render(request, 'loginn.html',{'invalid':invalid})
                
-  return render(request, 'loginn.html')
+    return render(request, 'loginn.html')
 
 @login_required(login_url='/loginn')
 def logoutt(request):
     logout(request)
     return redirect('/loginn')
 
-@login_required(login_url='/loginn')
+
 @login_required(login_url='/loginn')
 def home(request):
+    
+    # Lấy thông tin hồ sơ của người dùng hiện tại
+    try:
+        profile = Profile.objects.get(user=request.user)
+    except Profile.DoesNotExist: # nếu người dùng chưa có proflie thì tạo mới (thường là admin)
+        profile = Profile.objects.create(user=request.user, id_user=request.user.id)
+        profile.save()
+
+    
     # Lấy tất cả các bài viết, sắp xếp theo lượt vote giảm dần (no_of_likes)
     posts = Post.objects.all().order_by('-no_of_likes')
-
-    # Lấy thông tin hồ sơ của người dùng hiện tại
-    profile = Profile.objects.get(user=request.user)
+    
 
     # Truyền dữ liệu vào context để hiển thị trong template
     context = {
@@ -92,8 +103,9 @@ def upload(request):
         file = request.FILES.get('file_upload')  # Lấy file từ form
         caption = request.POST['caption']
         subject = request.POST['subject']
-
         # Tạo bài viết mới với file
+        # khi file is None, new_post.file được gán 1 instance of FieldFile dù không có file nào cả
+        # để check xem new_post.file có file hay k, dùng if new_post.file.name: True if name = ''
         new_post = Post.objects.create(user=user, title=title, file=file, caption=caption, subject=subject)
         new_post.save()
 
@@ -103,12 +115,12 @@ def upload(request):
 
 @login_required(login_url='/loginn')
 def likes(request, id):
-    if request.method == 'GET':
-        username = request.user.username
-        post = get_object_or_404(Post, id=id)
-
-        like_filter = LikePost.objects.filter(post_id=id, username=username).first()
-
+    post = get_object_or_404(Post, id=id)
+    username = request.user.username
+    like_filter = LikePost.objects.filter(post_id=id, username=username).first()
+    if request.method == 'GET': # check user hien tai da like post nay chua
+        return JsonResponse({'no_of_likes': post.no_of_likes, 'liked': like_filter is not None})
+    if request.method == 'POST':
         if like_filter is None:
             new_like = LikePost.objects.create(post_id=id, username=username)
             post.no_of_likes = post.no_of_likes + 1
@@ -122,9 +134,19 @@ def likes(request, id):
         print(post.id)
 
         # Redirect back to the post's detail page
-        return redirect('/#'+id)
-    
-@login_required(login_url='/loginn')
+        # return redirect('/#'+id)
+        return JsonResponse({'no_of_likes': post.no_of_likes, 'liked': like_filter is None})
+
+def liked_posts(request):
+    posts_id = LikePost.objects.filter(username=request.user.username)
+    liked_posts = Post.objects.filter(id__in=[post.post_id for post in posts_id])
+    profile = Profile.objects.get(user=request.user)
+    context = {
+        'posts': liked_posts,
+        'profile' : profile,
+    }
+    return render(request, 'liked_posts.html', context)
+
 
 @login_required(login_url='/loginn')
 def postdetail(request, post_id):
@@ -135,7 +157,7 @@ def postdetail(request, post_id):
     profile = Profile.objects.get(user=request.user)
 
     # # Lấy danh sách các bình luận liên quan đến bài viết
-    comments = post.comments.all().order_by('-created_at')
+    # comments = post.comments.all().order_by('-created_at')
 
     # Xử lý khi người dùng gửi bình luận
     if request.method == 'POST':
@@ -144,10 +166,13 @@ def postdetail(request, post_id):
             Comment.objects.create(post=post, user=request.user, content=content)
             return redirect('postdetail', post_id=post.id)  # Reload lại trang
 
+    post.caption = post.caption.replace('\n','<br>')
+    post.save()
+    print(post.caption)
     context = {
         'post': post,
         'profile': profile,
-        'comments': comments,  # Truyền danh sách bình luận vào template
+        # 'comments': comments,  # Truyền danh sách bình luận vào template
     }
     return render(request, 'postdetail.html', context)
 
@@ -155,17 +180,17 @@ def postdetail(request, post_id):
 
 @login_required(login_url='/loginn')
 def profile(request,id_user):
-    user_object = User.objects.get(username=id_user)
-    print(user_object)
-    profile = Profile.objects.get(user=request.user)
-    user_profile = Profile.objects.get(user=user_object)
+    user_object = User.objects.get(username=id_user) # người muốn xem
+    print(user_object) 
+    profile = Profile.objects.get(user=request.user) # profile của người dùng hiện tại
+    user_profile = Profile.objects.get(user=user_object) # profile của người muốn xem
     user_posts = Post.objects.filter(user=id_user).order_by('-created_at')
-    user_post_length = len(user_posts)
+    user_post_length = len(user_posts)# số lượng bài viết 
 
     follower = request.user.username
     user = id_user
     
-    if Followers.objects.filter(follower=follower, user=user).first():
+    if Followers.objects.filter(follower=follower, user=user).first(): # người dùng hiện tại có follow profile này k
         follow_unfollow = 'Unfollow'
     else:
         follow_unfollow = 'Follow'
@@ -212,12 +237,12 @@ def profile(request,id_user):
             return render(request, 'profile.html', context)
     return render(request, 'profile.html', context)
 
-@login_required(login_url='/loginn')
-def delete(request, id):
-    post = Post.objects.get(id=id)
-    post.delete()
+# @login_required(login_url='/loginn')
+# def delete(request, id):
+#     post = Post.objects.get(id=id)
+#     post.delete()
 
-    return redirect('/profile/'+ request.user.username)
+#     return redirect('/profile/'+ request.user.username)
 
 
 @login_required(login_url='/loginn')
@@ -274,3 +299,84 @@ def search_by_subject(request):
         'query': query,  # Pass the search query for display
     }
     return render(request, 'explore.html', context)  # Render the explore template
+
+def update_post(request,post_id):
+    post = Post.objects.get(id=post_id)
+    
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        file = request.FILES.get('file')
+        caption = request.POST.get('caption')
+        subject = request.POST.get('subject')
+        remove = request.POST.get('remove')
+        post.title = title
+        if file is not None:
+            post.file = file
+        if remove == 'true' and file is None: # remove is string, not boolean
+            post.file = None
+        post.caption = caption
+        post.caption = post.caption
+        post.subject = subject
+        post.save()
+
+        if post.file is not None and post.file.name:
+            return JsonResponse({'title':post.title, 'file':post.file.url, 'caption':post.caption, 'subject':post.subject, 'no_of_likes':post.no_of_likes})
+        return JsonResponse({'title':post.title, 'caption':post.caption, 'subject':post.subject, 'no_of_likes':post.no_of_likes})
+
+def delete_post(request, post_id):
+    post = Post.objects.get(id=post_id)
+    post.delete()
+    return redirect('/profile/'+request.user.username)
+
+    
+def edit_comment(request,cmt_id):
+    comment = Comment.objects.get(id=cmt_id)
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        comment.content = request.POST.get('newContent')
+        comment.save()
+        return JsonResponse({'cmtContent':comment.content})
+    
+def delete_comment(request,cmt_id):
+    comment = Comment.objects.get(id=cmt_id)
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        comment.delete()
+        return JsonResponse({})
+    return HttpResponse()
+
+def like_comment(request,cmt_id):
+    comment = Comment.objects.get(id=cmt_id)
+    username = request.user.username
+    like_filter = LikeComment.objects.filter(comment_id=cmt_id,username=username).first()
+    # if request.method == 'GET':
+    #     return JsonResponse({'no_of_likes':comment.no_of_likes, 'liked':like_filter is not None})
+    if request.method == 'POST':
+        if like_filter is None:
+            comment.no_of_likes += 1
+            LikeComment.objects.create(comment_id=cmt_id, username=username)
+        else:
+            comment.no_of_likes -= 1
+            like_filter.delete()
+        comment.save()
+        return JsonResponse({'no_of_likes':comment.no_of_likes, 'liked':like_filter is None})
+    
+def get_sorted_comments(request,post_id, crit):
+    if request.method == 'GET':
+        post = Post.objects.get(id=post_id)
+        if crit == 'time':
+            comments = Comment.objects.filter(post=post).order_by('-created_at') # comments là QuerySet, không JSON serialiazalbe
+        else: 
+            comments = Comment.objects.filter(post=post).order_by('-no_of_likes','-created_at')
+        # chuyển comments thành list các dict để có thể JSON serializable
+        l = []
+        for x in comments:
+            cmt = {
+                'id':x.id,
+                'user':x.user,
+                'content':x.content.replace('\n','<br>'),
+                'created_at':x.created_at,
+                'no_of_likes':x.no_of_likes,
+                'liked': LikeComment.objects.filter(username=request.user.username,comment_id=x.id).first() is not None,
+            }
+            l.append(cmt)
+
+        return JsonResponse({'comments':l})

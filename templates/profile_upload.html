@@ -1,4 +1,5 @@
 {% load static %}
+<!-- upload post modal -->
 <div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -24,6 +25,7 @@
                             <img src="{% static 'css/upload.png' %}" alt="Upload icon" class="m-1">
                             <label for="image-upload" class="col-form-label"><strong>Photo or File :</strong></label>
                             <input type="file" name="file_upload" class="form-control" id="file-upload" >
+                            
                         </div>
 
                         <!-- Lựa chọn môn học (thanh điều hướng) -->
@@ -74,3 +76,122 @@
         </div>
     </div>
 </div>
+
+<!-- UPDATE POST MODAL -->
+<div class="modal fade" id="updatePostModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel"><strong>Update Post</strong></h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+                <form id="update-post-form" method="POST">
+                    {% csrf_token %}
+                    <!-- Tiêu đề -->
+                    <div class="mb-3">
+                        <label for="update-title" class="col-form-label"><strong>Title :</strong></label>
+                        <textarea class="form-control" name="title" id="update-title" placeholder="Enter title..." required maxlength="500"></textarea>
+
+                    </div>
+
+                    <!-- Ảnh bài đăng -->
+                    <div class="row">
+                        <!-- Khu vực tải ảnh -->
+                        <div class="col-md-8 mb-3">
+                            
+                            <img src="{% static 'css/upload.png' %}" alt="Upload icon" class="m-1">
+                            <label for="image-upload" class="col-form-label"><strong>Photo or File :</strong></label>
+                            <input type="file" name="file_upload" class="form-control" id="update-file" >
+                            
+                            <!-- xem ảnh hiện tại -->
+                            <img id="preview-image" src="#" style="display: none; width: 100px; height: 100px;">
+                            <!-- xem file hiện tại -->
+                            <a href="#" class="btn btn-primary" target="_blank" id="preview-file" style="display: none;">File</a>
+                            <!-- nút huỷ đính kèm file hoặc ảnh -->
+                            <button type="button" id="remove-file-btn" class="btn btn-danger" style="display: none;">Remove File/Photo</button>
+                        </div>
+
+                        <!-- Lựa chọn môn học (thanh điều hướng) -->
+                        <div class="col-md-4 mb-3">
+                            <label for="subject" class="col-form-label" style="margin-bottom: 18px;" ><strong>Subject :</strong></label>
+                            <select class="form-control " name="subject" id="update-subject" required >
+                                <option value="" disabled selected>Choose a subject.</option>
+                                <option value="Hướng Đối Tượng">Hướng Đối Tượng</option>
+                                <option value="Lịch Sử Đảng">Lịch Sử Đảng</option>
+                                <option value="Toán Rời Rạc II">Toán Rời Rạc II</option>
+                                <option value="Tư Tưởng Hồ Chí Minh">Tư Tưởng Hồ Chí Minh</option>
+                                <option value="Python">Python</option>
+                                <option value="Mạng Máy Tính">Mạng Máy Tính</option>
+                                <option value="Hệ Điều Hành">Hệ Điều Hành</option>
+                                <option value="Lý Thuyết Thông Tin">Lý Thuyết Thông Tin</option>
+                                <option value="Kiến Trúc Máy Tính">Kiến Trúc Máy Tính</option>
+                            </select>
+                            <small id="subjectError" style="color: red; display: none;">Please choose a subject.</small>
+                        </div>
+                    </div>
+
+                    <!-- Caption -->
+                    <div class="mb-3">
+                        <label for="caption" class="col-form-label"><strong>Detailed Description :</strong></label>
+                        <textarea class="form-control" name="caption" id="update-caption" placeholder="Enter caption..."
+                                  required></textarea>
+                    </div>
+
+                    
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Update Post</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- DELETE POST MODAL -->
+<div class="modal fade" id="deletePostModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel"><strong>Delete Post</strong></h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure to delete <b>"{{post.title}}"</b>?
+            </div>
+            <div class="modal-footer">
+                <form id="delete-post-form">
+                    {% csrf_token %}
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-bs-target="#deletePostModal">Close</button>
+                    <button type="submit" class="btn btn-danger" >Delete Post</button>
+                </form>
+            </div>
+        
+        </div>
+    </div>
+</div>
+
+<!-- delete comment modal -->
+
+<!-- <div class="modal fade" id="deleteCommentModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel"><strong>Delete Comment</strong></h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure to delete this comment?
+            </div>
+            <div class="modal-footer">
+                <form method="post" id="delete-comment-form-{{comment.id}}" class="delete-comment-form">
+                    {% csrf_token %}
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-bs-target="#deleteCommentModal">Cancel</button>
+                    <button type="submit" class="btn btn-danger" >Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div> -->

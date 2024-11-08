@@ -9,8 +9,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://kit.fontawesome.com/cb792c0850.js" crossorigin="anonymous"></script>
+    <script scr="{% static 'js/detail.js' %}" defer></script>
+    <!-- to use jQuery/Ajax in project -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    
 
     <title>Detail</title>
     <link rel="stylesheet" href="{% static 'css/app.css' %}">
@@ -67,7 +72,7 @@
         }
 
 
-        .image__overlay > * {
+        .image__overlay>* {
             transform: translateY(20px);
             transition: transform 0.25s;
         }
@@ -76,7 +81,7 @@
             opacity: 1;
         }
 
-        .image__overlay:hover > * {
+        .image__overlay:hover>* {
             transform: translateY(0);
         }
 
@@ -99,136 +104,266 @@
 
 <body>
 
-{% load static %}
+    {% load static %}
 
-<div class="container-fluid">
-    <div class="row">
-        <nav class="col-md-2 d-none d-md-block sidebar" style="position: fixed;">
-            <div class="text-center mt-3">
-                <img src="{{ profile.profileimg.url }}" alt="Profile Picture" class="profile-pic">
-                <h4 class="mt-2"><a href="/profile/{{ user }}" style="text-decoration:none;">@{{ user }}</a></h4>
-            </div>
-            <ul class="nav flex-column mt-4">
-                <li class="nav-item">
-                    <a class="nav-link active" href="/">
-                        <i class="fa-solid fa-house mr-1"></i> Home
-                    </a>
-                </li>
-                <hr>
-                <li class="nav-item">
-                    <a class="nav-link" href="/explore">
-                        <i class="fa-solid fa-compass mr-1"></i> Explore
-                    </a>
-                </li>
-                <hr>
-                <li class="nav-item">
-                    <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#exampleModal3">
-                        <i class="fa-solid fa-magnifying-glass mr-1"></i> Search
-                    </a>
-                </li>
-                <hr>
-                <li class="nav-item">
-                    <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#exampleModal2"
-                       data-bs-whatever="@getbootstrap">
-                        <i class="fa-solid fa-circle-plus mr-1"></i> Create Post
-                    </a>
-                </li>
-                <hr>
-                <li class="nav-item">
-                    <a class="nav-link" href="/profile/{{ user }}">
-                        <i class="fa-solid fa-user mr-1"></i> Profile
-                    </a>
-                </li>
-                <hr>
-                <li class="nav-item">
-                    <a class="nav-link" href="/logoutt">
-                        <i class="fa-solid fa-right-from-bracket mr-1"></i> Logout
-                    </a>
-                </li>
-            </ul>
-        </nav>
-        {% include "modal.html" %}
-        {% include "search.html" %}
-        {% include "profile_upload.html" %}
-        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
-            <div class="container mt-4">
-                <div class="row justify-content-center">
-                    <div class="col-md-8">
-                        <div class="card shadow-sm border-0">
-                            <div class="card-body">
-                                <!-- Hiển thị thông tin bài viết -->
-                                <h5 class="card-title">{{ post.user }}</h5>
-                                {% if post.file %}
-                                    {% if post.file.url|endswith_any:".jpg,.png,.jpeg" %}
-                                        <img src="{{ post.file.url }}" alt="..."
-                                             class="img-fluid"
-                                             style="border-radius: 10px; height: 400px;width: 400px;margin-left: 150px">
-                                    {% else %}
-                                        <a href="{{ post.file.url }}" class="btn btn-primary"
-                                           target="_blank">Download File</a>
+    <div class="container-fluid">
+        <div class="row">
+            <nav class="col-md-2 d-none d-md-block sidebar" style="position: fixed;">
+                <div class="text-center mt-3" style="height: 80px;">
+                    <img src="{{ profile.profileimg.url }}" alt="Profile Picture" class="profile-pic">
+                    <h4 class="mt-2"><a href="/profile/{{ user }}" style="text-decoration:none;">@{{ user }}</a></h4>
+                </div>
+                <ul class="nav flex-column mt-4">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/">
+                            <i class="fa-solid fa-house mr-1"></i> Home
+                        </a>
+                    </li>
+                    <hr>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/explore">
+                            <i class="fa-solid fa-compass mr-1"></i> Explore
+                        </a>
+                    </li>
+                    <hr>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#exampleModal3">
+                            <i class="fa-solid fa-magnifying-glass mr-1"></i> Search
+                        </a>
+                    </li>
+                    <hr>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#exampleModal2"
+                           data-bs-whatever="@getbootstrap">
+                            <i class="fa-solid fa-circle-plus mr-1"></i> Create Post
+                        </a>
+                    </li>
+                    <hr>
+                    <li class="nav-item" style="height: 30px;">
+                        <a class="nav-link" href="/liked-posts/">
+                            <i class="fa fa-thumbs-up" aria-hidden="true"></i> Liked Posts
+                        </a>
+                    </li>
+                    <hr>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/profile/{{ user }}">
+                            <i class="fa-solid fa-user mr-1"></i> Profile
+                        </a>
+                    </li>
+                    <hr>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logoutt">
+                            <i class="fa-solid fa-right-from-bracket mr-1"></i> Logout
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            {% include "modal.html" %}
+            {% include "search.html" %}
+            {% include "profile_upload.html" %}
+            <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+                <div class="container mt-4">
+                    <div class="row justify-content-center">
+                        <div class="col-md-8">
+                            <div class="card shadow-sm border-0">
+                                <div class="card-body">
+                                    <!-- Hiển thị thông tin bài viết -->
+                                     <div id="post-id" pid="{{post.id}}"></div>
+                                    <h5 id="post-user" class="card-title">{{ post.user }}</h5>
+                                    <!-- file hoac anh cua bai viet -->
+                                     {% if post.file %}
+                                    <div id="post-file" file="{{post.file.url}}">
+                                        <img id="post-image-id" src="#" alt="..." class="img-fluid"
+                                        style="border-radius: 10px; height: 400px;width: 800px;margin-left: 0px">
+
+                                        <a id="post-file-id" href="#" class="btn btn-primary"
+                                        target="_blank">Download File</a>
+                                    </div>
                                     {% endif %}
-                                {% endif %}
+                                    <!-- {% if post.file %}
+                                    {% if post.file.url|endswith_any:".jpg,.png,.jpeg" %}
+                                    <img id="post-file-id" src="{{ post.file.url }}" alt="..." class="img-fluid"
+                                        style="border-radius: 10px; height: 400px;width: 400px;margin-left: 150px">
+                                    {% else %}
+                                    <a id="post-file-id" href="{{ post.file.url }}" class="btn btn-primary"
+                                        target="_blank">Download File</a>
+                                    {% endif %}
+                                    {% endif %} -->
+                                    <br>
+                                    <div class="mt-3">
+                                        <strong>Title: </strong>
+                                        <h5 id="post-title-id">{{ post.title }}</h5>
+                                    </div>
 
-                                <h5 class="mt-3"><strong>Title:</strong> {{ post.title }}</h5>
-                                <p class="mt-2"><strong>Detailed Description :</strong> {{ post.caption }}</p>
+                                    <div class="mt-3">
+                                        <strong>Detailed Description :</strong>
+                                        <p id="post-caption-id">{{ post.caption|safe}}</p>
+                                    </div>
 
-                                <!-- Hiển thị số lượt thích và các thông tin khác -->
-                                <div class="d-flex justify-content-between align-items-center mt-3">
-                                    <span class="text-muted">Votes: {{ post.no_of_likes }}</span>
-                                    <span class="text-muted">Subject: {{ post.subject }}</span>
+
+                                    <!-- Hiển thị số lượt thích và các thông tin khác -->
+                                    <div class="d-flex justify-content-between align-items-center mt-3">
+
+                                        <!-- <div class="text-muted">
+                                            <label style="display: inline-block;">Votes: </label>
+                                            <p id="post-like-id" style="display: inline-block;">{{ post.no_of_likes }}
+                                            </p>
+                                        </div> -->
+
+                                        <div class="text-muted">
+                                            <label style="display: inline-block;">Subject: </label>
+                                            <p id="post-subject-id" style="display: inline-block;">{{ post.subject }}</p>
+                                        </div>
+                                    </div>
+                                    <!-- like or unlike form -->
+                                    <form method="post" id="like-unlike-form-{{post.id}}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-outline-primary" id="like-unlike-{{post.id}}"></button>
+                                    </form>
+        
+                                    {% if user.username == post.user %}
+                                    <button id='update-post-btn' style="border:none; background: none;"
+                                        data-bs-toggle="modal" data-bs-target="#updatePostModal"><i
+                                            class="fas fa-edit"></i></button>
+                                    <!-- <button id='delete-post-btn' style="border:none; background: none;"
+                                        data-bs-toggle="modal" data-bs-target="#deletePostModal"><i
+                                            class="fa-solid fa-trash"></i></button> -->
+                                    <a href="/post/delete/{{post.id}}/" tyle="border:none; background: none;" ><i
+                                        class="fa-solid fa-trash" onclick="return confirm('Do you want to delete this post?')"></i></a>
+                                    {% endif %}
                                 </div>
-                                <!-- <a href="/like-post/{{ pos.id }}" class="btn btn-outline-primary">Vote</a> -->
                             </div>
-                        </div>
-                        <!-- Phần bình luận -->
-                        <div class="mt-4">
-                            <h4 class="mb-3">Comments</h4>
-                            <div id="comments-section">
-                                {% if post.comments.exists %}
+                            <!-- Phần bình luận -->
+                            <div class="mt-4">
+                                <div style="display: flex; align-items: center; justify-content: space-between;">
+                                    <h4 class="mb-3">Comments</h4>
+                                    {% if post.comments.exists %}
+                                    <div class="dropdown">
+                                        <button class="btn dropdown-toggle" type="button" id="sort-cmt-btn" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                          Sort comments
+                                        </button>
+                                        <div class="dropdown-menu" aria-labelledby="sort-cmt-btn">
+                                          <button class="dropdown-item" id="sort-time">By Time (Default)</button>
+                                          <button class="dropdown-item" id="sort-like">By Like</button>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div id="comments-section">
+                                    <!-- {% if post.comments.exists %}
                                     {% for comment in post.comments.all %}
-                                        <div class="comment p-3 mb-3"
-                                             style="border: 1px solid #e3e3e3; border-radius: 10px; background-color: #f9f9f9;">
-                                            <h5 class="mb-1">
-                                                <a href="/profile/{{ comment.user }}"
-                                                   style="text-decoration: none; font-weight: bold;">
-                                                    @{{ comment.user}}
-                                                </a>
-                                            </h5>
-                                            <p class="mb-2" style="margin-left: 15px;">{{ comment.content }}</p>
-                                            <div class="d-flex justify-content-between">
-                                                <small class="text-muted">{{ comment.created_at|date:"Y-m-d H:i" }}</small>
+                                    
+                                    <div class="comment p-3 mb-3"
+                                        style="border: 1px solid #e3e3e3; border-radius: 10px; background-color: #f9f9f9;"
+                                        id="comment-{{comment.id}}">
+                                        
+                                        <h5 class="mb-1">
+                                            <a href="/profile/{{ comment.user }}"
+                                                style="text-decoration: none; font-weight: bold;">
+                                                @{{ comment.user}}
+                                            </a>
+                                        </h5>
+                                        <div class="comment-content-container">
+                                            noi dung comment
+                                            <p cmt-id="{{comment.id}}" class="mb-2 comment-text"
+                                                style="margin-left: 15px;">{{ comment.content }}</p>
+                                            like or unlike comment
+                                            <form method="post" class="like-cmt-form" cmt-id="{{comment.id}}">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-outline-primary like-cmt-btn" id="like-cmt-{{comment.id}}"></button>
+                                            </form>
+                                            form chinh sua comment
+                                            <div class="edit-form" style="display: none;">
+                                                <textarea class="form-control mb-2">{{ comment.content }}</textarea>
+                                                <button class="btn btn-secondary btn-sm cancel-edit">Cancel</button>
+                                                <button type="submit" class="btn btn-primary btn-sm save-edit">Save</button>
                                             </div>
                                         </div>
+                                        <div class="d-flex justify-content-between">
+                                            <small class="text-muted">{{ comment.created_at|date:"Y-m-d H:i" }}</small>
+                                        </div>
+
+                                        {% if user.username == comment.user %}
+                                            <button class="edit-comment" style="border:none; background: none;"><i
+                                                class="fas fa-edit"></i></button>
+                                            delete comment modal
+                                            <div class="modal fade" id="deleteCommentModal-{{comment.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h1 class="modal-title fs-5" id="exampleModalLabel"><strong>Delete Comment</strong></h1>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            Are you sure to delete this comment?
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <form id="delete-comment-form-{{comment.id}}" class="delete-comment-form">
+                                                                {% csrf_token %}
+                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-bs-target="#deleteCommentModal-{{comment.id}}">Cancel</button>
+                                                                <button type="submit" class="btn btn-danger del-cmt-btn" >Delete</button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <button  style="border:none; background: none;"
+                                                data-bs-toggle="modal" data-bs-target="#deleteCommentModal-{{comment.id}}">
+                                                <i class="fa-solid fa-trash"></i></button>
+                                        {% endif %}
+                                    </div>
                                     {% empty %}
-                                        <p>No comments yet.</p>
+                                    <p>No comments yet.</p>
                                     {% endfor %}
-                                {% endif %}
+                                    {% endif %} -->
+                                </div>
+
+                                <!-- Form thêm bình luận -->
+                                <h5 class="mt-4" id="cmt-tag">Add a Comment</h5>
+                                <form method="POST" class="mt-3" id="add-cmt-form">
+                                    {% csrf_token %}
+                                    <textarea name="content" rows="3" class="form-control mb-3"
+                                        placeholder="Write a comment..."
+                                        style="border-radius: 10px; padding: 10px;"></textarea>
+                                    <button type="submit" class="btn btn-danger" style="border-radius: 10px;">Submit
+                                    </button>
+                                </form>
+
+                                <!-- form update binh luan
+                            
+                            <form method="POST" class="mt-3" id="update-cmt-form" style="display: none;">
+                                {% csrf_token %}
+                                <textarea name="content" id="update-content" rows="3" class="form-control mb-3"
+                                          placeholder="Write a comment..."
+                                          style="border-radius: 10px; padding: 10px;" ></textarea>
+                                <button id="cancel-cmt-btn" type="submit" class="btn btn-secondary" style="border-radius: 10px; display: none;">Cancel
+                                </button>
+                                <button  type="submit" class="btn btn-danger" style="border-radius: 10px;">Submit
+                                </button>
+                            </form> -->
                             </div>
 
-                            <!-- Form thêm bình luận -->
-                            <h5 class="mt-4">Add a Comment</h5>
-                            <form method="POST" class="mt-3">
-                                {% csrf_token %}
-                                <textarea name="content" rows="3" class="form-control mb-3"
-                                          placeholder="Write a comment..."
-                                          style="border-radius: 10px; padding: 10px;"></textarea>
-                                <button type="submit" class="btn btn-danger" style="border-radius: 10px;">Submit
-                                </button>
-                            </form>
                         </div>
-
                     </div>
                 </div>
-            </div>
-        </main>
+            </main>
 
+        </div>
     </div>
-</div>
 
-<script src="{% static 'js/app.js' %}"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+    
+
+    <script>
+        const currentUser = "{{user.username}}"
+    </script>
+    
+    <script src="{% static 'js/detail.js' %}" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
+
 </body>
 
 </html>
