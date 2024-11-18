@@ -186,9 +186,8 @@ if(updPostForm){
                 
                 title.textContent = response.title
                 titleForm.value = response.title
-                console.log(response.caption)
-                console.log(response.caption.replace('\n','<br>'))
-                caption.innerHTML = response.caption;
+                
+                caption.innerHTML = response.caption.replace(/\n/g,'<br>');
                 capForm.value = response.caption;
                 subject.textContent = response.subject;
                 subForm.value = response.subject;
@@ -598,18 +597,6 @@ document.addEventListener('DOMContentLoaded', function() {
 })
 
 function dateFormat(dateString){
-    // VN locale
-    // const date = new Date(dateString);
-    // const fDate = date.toLocaleString("vi-VN",{
-    //     year: 'numeric',
-    //     month: '2-digit',
-    //     day: '2-digit',
-    //     hour: '2-digit',
-    //     hour12: false,
-    //     minute: '2-digit',
-    // })
-    // return fDate;
-
     const date = new Date(dateString);
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");

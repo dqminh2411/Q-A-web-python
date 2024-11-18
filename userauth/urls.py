@@ -27,6 +27,8 @@ urlpatterns = [
     path('comment/like/<int:cmt_id>', views.like_comment, name='like-comment'),
     path('comment/sort/<uuid:post_id>/<str:crit>', views.get_sorted_comments),
     path('liked-posts/', views.liked_posts, name='liked-posts'),
+    path('post/recommend/', views.recommend_posts),
+
     
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -29,6 +29,9 @@ class Post(models.Model):
 
     def __str__(self):
         return self.user
+    @property
+    def no_of_comments(self):
+        return Comment.objects.filter(post=self).count()
 
 class LikePost(models.Model):
     post_id = models.CharField(max_length=500)

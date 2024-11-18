@@ -53,13 +53,27 @@
                         <textarea class="form-control" name="caption" id="caption" placeholder="Enter caption..."
                                   required></textarea>
                     </div>
-
             </div>
+
+            <div style="justify-content: center; display: flex;">
+                <div class="spinner-border text-secondary" id="spinner" style="display: none;" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+            
+            <div class="posts-container" id="rcm-posts" style="display: none;">
+            </div>
+            <div class="alert alert-danger" id="nopost-alert" role="alert" style="display: none;">
+                No posts has relevant content to your post.
+              </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-success" id="rcm-btn">Recommend posts</button> 
                 <button type="submit" class="btn btn-primary">Create Post</button>
             </div>
+            
             </form>
+            
             <script>
                 document.getElementById('postForm').addEventListener('submit', function (event) {
                     const subjectField = document.getElementById('subject');

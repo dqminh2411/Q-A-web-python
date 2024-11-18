@@ -1,39 +1,97 @@
-<div class="mt-4">
-    <h4 class="mb-3">Comments</h4>
-    <div id="comments-section">
-        {% if post.comments.exists %}
-            {% for comment in post.comments.all %}
-                <div class="comment p-3 mb-3" id="comment-{{ comment.id }}"
-                     style="border: 1px solid #e3e3e3; border-radius: 10px; background-color: #f9f9f9;">
-                    <h5 class="mb-1">
-                        <a href="/profile/{{ comment.user }}"
-                           style="text-decoration: none; font-weight: bold;">
-                            @{{ comment.user}}
-                        </a>
-                    </h5>
-                    <!-- Comment content container -->
-                    <div class="comment-content-container">
-                        <p class="mb-2 comment-text" style="margin-left: 15px;">{{ comment.content|safe }}</p>
-                        <!-- Edit form (hidden by default) -->
-                        <div class="edit-form" style="display: none;">
-                            <textarea class="form-control mb-2">{{ comment.content }}</textarea>
-                            <button class="btn btn-primary btn-sm save-edit">Save</button>
-                            <button class="btn btn-secondary btn-sm cancel-edit">Cancel</button>
-                        </div>
-                    </div>
-                    <div class="d-flex justify-content-between">
-                        <small class="text-muted">{{ comment.created_at|date:"Y-m-d H:i" }}</small>
-                    </div>
-                    
-                    {% if user.username == comment.user %} 
-                    <button class="btn btn-primary edit-comment">Edit</button>
-                    <a href="/comment/delete/{{ comment.id }}" class="btn btn-danger" 
-                       onclick="return confirm('Are you sure you want to delete this comment?');">Delete</a>                                            
-                    {% endif %}
-                </div>
-            {% empty %}
-                <p>No comments yet.</p>
-            {% endfor %}
-        {% endif %}
-    </div>
-</div>
+<!DOCTYPE html>
+<hmtl lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>SignUp</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+            integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+        <script src="https://kit.fontawesome.com/cb792c0850.js" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="{% static 'css/app.css' %}">
+        <style>
+            .post-box {
+            display: flex;
+            width: 700px;
+            border: 1px solid #ddd;
+            padding: 10px;
+            background-color: #f9f9f9;
+            }
+
+            /* Left part */
+            .left-part {
+            width: 20%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            }
+
+            .comment-bubble {
+            background-color: green;
+            color: white;
+            padding: 10px;
+            border-radius: 15px;
+            font-size: 14px;
+            }
+
+            /* Right part */
+            .right-part {
+            width: 80%;
+            padding-left: 10px;
+            }
+
+            .post-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #007bff;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 5px;
+            }
+
+            .post-title:hover {
+            text-decoration: underline;
+            }
+
+            .post-caption {
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 10px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            }
+
+            .post-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #888;
+            }
+
+            .subject {
+            font-weight: bold;
+            }
+
+            .meta-info {
+            text-align: right;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="post-box" >
+            <div class="left-part">
+              <div class="comment-bubble">1 comment</div>
+            </div>
+            <div class="right-part">
+              <a href="#" class="post-title">This is the Title of the Post</a>
+              <p class="post-caption">This is a sample piece of post content that will end with an ellipsis...</p>
+              <div class="post-meta">
+                <span class="subject">Topic Name</span>
+                <span class="meta-info">Time: 10:00 AM | Author: John Doe</span>
+              </div>
+            </div>
+        </div>          
+    </body>
+
+</hmtl>
+

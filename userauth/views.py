@@ -10,7 +10,10 @@ from django.db.models import Q
 from django.db import models
 from django.http import JsonResponse
 from django.forms.models import model_to_dict
-
+from pyvi import ViPosTagger, ViTokenizer
+from rake_nltk import Rake
+import spacy
+from langdetect import detect
 def signup(request):
     try:
         if request.method == 'POST':
@@ -87,7 +90,6 @@ def home(request):
 def explore(request):
     post = Post.objects.all().order_by('-created_at')
     profile = Profile.objects.get(user=request.user)
-
     context = {
         'post': post,
         'profile': profile
@@ -380,3 +382,84 @@ def get_sorted_comments(request,post_id, crit):
             l.append(cmt)
 
         return JsonResponse({'comments':l})
+def ext_vi_kws(text):
+    with open('./static/vietnamese-stopwords.txt',encoding='utf-8') as file:
+        stopwords = file.read().splitlines()
+        
+    # loại bỏ stopwords ra khỏi text trước khi xử lý
+    rake = Rake(stopwords=stopwords, include_repeated_phrases=False)
+    rake.extract_keywords_from_text(text)
+    phr_no_stopwords = rake.get_ranked_phrases()
+    kws = set()
+    kw_tags = ['N','Ny','Np','M'] # N: danh từ, Ny: danh từ viết tắt, Np: tên riêng, M: số
+    for phr in phr_no_stopwords:
+        if len(phr.split()) > 4:
+            tks = ViTokenizer.tokenize(text[text.lower().index(phr):text.lower().index(phr)+len(phr)]) # Chuyển câu thành các token từ
+            pos_tags = ViPosTagger.postagging(tks) # gán từ loại cho các token
+            # pos_tags[0]: danh sách từ, pos_tags[1]: danh sách pos tags
+            for i in range(len(pos_tags[0])): 
+                if pos_tags[1][i] in kw_tags:
+                    kws.add(' '.join([w for w in pos_tags[0][i].split('_')]))
+        else:
+            pos_tag = ViPosTagger.postagging(phr)
+            if pos_tag[1][0] in kw_tags:
+                kws.add(phr)
+    print(kws)
+    return kws
+def ext_en_kws(text):
+    nlp = spacy.load("en_core_web_sm")
+    kws = set()
+    kws_tags = ['NOUN','NUM','PROPN'] # NOUN: danh từ, NUM: số, PROPN: tên riêng
+    doc = nlp(text)
+    for token in doc:
+        if token.pos_ in kws_tags and not token.is_stop:
+            kws.add(token.text)
+    return kws
+
+def recommend_posts(request):
+    rec_posts = {}
+    data = json.loads(request.body)
+    subject = data.get('subject')
+    caption = data.get('caption')
+    title = data.get('title')
+    print(caption, subject, title)
+    kws = set()
+    if detect(title) == 'en':
+        kws |= ext_en_kws(title)
+    else:
+        kws |= ext_vi_kws(title)
+    if detect(caption) == 'en':
+        kws |= ext_en_kws(caption)
+    else:
+        kws |= ext_vi_kws(caption)
+
+    kws = list(kws)
+    for kw in kws:
+        posts = Post.objects.filter(Q(title__icontains=kw) | Q(caption__icontains=kw))
+        for p in posts:
+            occur_count = p.caption.count(kw) + p.title.count(kw)
+            if p not in rec_posts:
+                rec_posts[p] = [1,occur_count] # [a,b]: a là số từ khoá xuất hiện, b là số lần xuất hiện của tất cả từ khoá
+            else:
+                rec_posts[p][0] += 1
+                rec_posts[p][1] += occur_count
+    rec_posts = dict(sorted(rec_posts.items(), key=lambda x: (-x[1][0], -x[1][1])))
+    same_sub, diff_sub = [],[]
+    for post in rec_posts.keys():
+        p = {
+            'id':post.id,
+            'title':post.title,
+            'caption':post.caption,
+            'subject':post.subject,
+            'created_at':post.created_at,
+            'user':post.user,
+            'no_of_comments':post.no_of_comments,
+        }
+        if post.subject == subject:
+            same_sub.append(p)
+        else:
+            diff_sub.append(p)
+    return JsonResponse({'same_sub':same_sub, 'diff_sub':diff_sub})
+
+
+
