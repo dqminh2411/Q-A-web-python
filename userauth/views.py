@@ -417,23 +417,25 @@ def ext_en_kws(text):
     return kws
 
 def recommend_posts(request):
-    rec_posts = {}
     data = json.loads(request.body)
     subject = data.get('subject')
     caption = data.get('caption')
     title = data.get('title')
     print(caption, subject, title)
     kws = set()
-    if detect(title) == 'en':
-        kws |= ext_en_kws(title)
-    else:
-        kws |= ext_vi_kws(title)
-    if detect(caption) == 'en':
-        kws |= ext_en_kws(caption)
-    else:
-        kws |= ext_vi_kws(caption)
+    if title:
+        if detect(title) == 'en':
+            kws |= ext_en_kws(title)
+        else:
+            kws |= ext_vi_kws(title)
+    if caption:
+        if detect(caption) == 'en':
+            kws |= ext_en_kws(caption)
+        else:
+            kws |= ext_vi_kws(caption)
 
     kws = list(kws)
+    rec_posts = {}
     for kw in kws:
         posts = Post.objects.filter(Q(title__icontains=kw) | Q(caption__icontains=kw))
         for p in posts:
