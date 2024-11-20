@@ -159,7 +159,7 @@
                 </ul>
             </nav>
             
-            <!-- {% include "modal.html" %} -->
+            
             {% include "search.html" %}
             {% include "profile_upload.html" %}
             <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
@@ -170,7 +170,8 @@
                                 <div class="card-body">
                                     <!-- Hiển thị thông tin bài viết -->
                                      <div id="post-id" pid="{{post.id}}"></div>
-                                    <h5 id="post-user" class="card-title">{{ post.user }}</h5>
+                                     <h5><a href="/profile/{{ post.user.username }}" 
+                                        style="text-decoration: none;" id="post-user" class="card-title">{{ post.user.username }}</a></h5>
                                     <!-- file hoac anh cua bai viet -->
                                      {% if post.file %}
                                     <div id="post-file" file="{{post.file.url}}">
@@ -222,7 +223,7 @@
                                         <button type="submit" class="btn btn-outline-primary" id="like-unlike-{{post.id}}"></button>
                                     </form>
         
-                                    {% if user.username == post.user %}
+                                    {% if user.username == post.user.username %}
                                     <button id='update-post-btn' style="border:none; background: none;"
                                         data-bs-toggle="modal" data-bs-target="#updatePostModal"><i
                                             class="fas fa-edit"></i></button>

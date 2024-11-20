@@ -93,7 +93,7 @@
         </nav>
         <!-- this is the main content code -->
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
-            <!-- {% include "modal.html" %} -->
+            
             {% include "search.html" %}
             {% include "profile_upload.html" %}
             <!-- Home posts code -->
@@ -123,8 +123,8 @@
                         {% endif %}
 
                         <h5 style="margin-left: 15px; margin-top: 10px;">
-                            <a href="/profile/{{ pos.user }}"
-                               style="text-decoration: none;">@{{ pos.user }}</a>
+                            <a href="/profile/{{ pos.user.username }}"
+                               style="text-decoration: none;">@{{ pos.user.username }}</a>
                         </h5>
 
                         <div class="post-content p-3">

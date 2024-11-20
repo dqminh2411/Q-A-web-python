@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', function(){
                     psubject.textContent = post['subject']
                     const pMetaInfo = document.createElement('span')
                     pMetaInfo.classList.add('meta-info')
-                    pMetaInfo.textContent = `created at: ${post['created_at']} by ${post['user']}`
+                    pMetaInfo.textContent = `created at: ${dateFormat(post['created_at'])} by ${post['user']}`
 
                     pmeta.appendChild(psubject)
                     pmeta.appendChild(pMetaInfo)

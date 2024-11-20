@@ -24,7 +24,7 @@ def signup(request):
             my_user=User.objects.create_user(fnm,emailid,pwd)
             my_user.save()
             user_model = User.objects.get(username=fnm)
-            new_profile = Profile.objects.create(user=user_model, id_user=user_model.id)
+            new_profile = Profile.objects.create(user=user_model)
             new_profile.save()
             if my_user is not None:
                 login(request,my_user)
@@ -70,7 +70,7 @@ def home(request):
     try:
         profile = Profile.objects.get(user=request.user)
     except Profile.DoesNotExist: # nếu người dùng chưa có proflie thì tạo mới (thường là admin)
-        profile = Profile.objects.create(user=request.user, id_user=request.user.id)
+        profile = Profile.objects.create(user=request.user)
         profile.save()
 
     
@@ -100,7 +100,7 @@ def explore(request):
 @login_required(login_url='/loginn')
 def upload(request):
     if request.method == 'POST':
-        user = request.user.username
+        user = request.user
         title = request.POST['title']
         file = request.FILES.get('file_upload')  # Lấy file từ form
         caption = request.POST['caption']
@@ -118,13 +118,12 @@ def upload(request):
 @login_required(login_url='/loginn')
 def likes(request, id):
     post = get_object_or_404(Post, id=id)
-    username = request.user.username
-    like_filter = LikePost.objects.filter(post_id=id, username=username).first()
+    like_filter = LikePost.objects.filter(post=post, user=request.user).first()
     if request.method == 'GET': # check user hien tai da like post nay chua
         return JsonResponse({'no_of_likes': post.no_of_likes, 'liked': like_filter is not None})
     if request.method == 'POST':
         if like_filter is None:
-            new_like = LikePost.objects.create(post_id=id, username=username)
+            new_like = LikePost.objects.create(post=post, user=request.user)
             post.no_of_likes = post.no_of_likes + 1
         else:
             like_filter.delete()
@@ -140,7 +139,7 @@ def likes(request, id):
         return JsonResponse({'no_of_likes': post.no_of_likes, 'liked': like_filter is None})
 
 def liked_posts(request):
-    posts_id = LikePost.objects.filter(username=request.user.username)
+    posts_id = LikePost.objects.filter(user=request.user)
     liked_posts = Post.objects.filter(id__in=[post.post_id for post in posts_id])
     profile = Profile.objects.get(user=request.user)
     context = {
@@ -186,19 +185,17 @@ def profile(request,id_user):
     print(user_object) 
     profile = Profile.objects.get(user=request.user) # profile của người dùng hiện tại
     user_profile = Profile.objects.get(user=user_object) # profile của người muốn xem
-    user_posts = Post.objects.filter(user=id_user).order_by('-created_at')
+    user_posts = Post.objects.filter(user=user_object).order_by('-created_at')
     user_post_length = len(user_posts)# số lượng bài viết 
 
-    follower = request.user.username
-    user = id_user
     
-    if Followers.objects.filter(follower=follower, user=user).first(): # người dùng hiện tại có follow profile này k
+    if Followers.objects.filter(follower=request.user, user=user_object).first(): # người dùng hiện tại có follow profile này k
         follow_unfollow = 'Unfollow'
     else:
         follow_unfollow = 'Follow'
 
-    user_followers = len(Followers.objects.filter(user=id_user))
-    user_following = len(Followers.objects.filter(follower=id_user))
+    user_followers = len(Followers.objects.filter(user=user_object))
+    user_following = len(Followers.objects.filter(follower=user_object))
 
     context = {
         'user_object': user_object,
@@ -273,17 +270,17 @@ def home_post(request,id):
 
 def follow(request):
     if request.method == 'POST':
-        follower = request.POST['follower']
-        user = request.POST['user']
+        follower = User.objects.get(username = request.POST['follower'])
+        user = User.objects.get(username = request.POST['user'])
 
         if Followers.objects.filter(follower=follower, user=user).first():
             delete_follower = Followers.objects.get(follower=follower, user=user)
             delete_follower.delete()
-            return redirect('/profile/'+user)
+            return redirect('/profile/'+user.username)
         else:
             new_follower = Followers.objects.create(follower=follower, user=user)
             new_follower.save()
-            return redirect('/profile/'+user)
+            return redirect('/profile/'+user.username)
     else:
         return redirect('/')
 
@@ -347,14 +344,13 @@ def delete_comment(request,cmt_id):
 
 def like_comment(request,cmt_id):
     comment = Comment.objects.get(id=cmt_id)
-    username = request.user.username
-    like_filter = LikeComment.objects.filter(comment_id=cmt_id,username=username).first()
+    like_filter = LikeComment.objects.filter(comment=comment,user=request.user).first()
     # if request.method == 'GET':
     #     return JsonResponse({'no_of_likes':comment.no_of_likes, 'liked':like_filter is not None})
     if request.method == 'POST':
         if like_filter is None:
             comment.no_of_likes += 1
-            LikeComment.objects.create(comment_id=cmt_id, username=username)
+            LikeComment.objects.create(comment=comment, user=request.user)
         else:
             comment.no_of_likes -= 1
             like_filter.delete()
@@ -373,15 +369,16 @@ def get_sorted_comments(request,post_id, crit):
         for x in comments:
             cmt = {
                 'id':x.id,
-                'user':x.user,
+                'user':x.user.username,
                 'content':x.content.replace('\n','<br>'),
                 'created_at':x.created_at,
                 'no_of_likes':x.no_of_likes,
-                'liked': LikeComment.objects.filter(username=request.user.username,comment_id=x.id).first() is not None,
+                'liked': LikeComment.objects.filter(user=request.user,comment=x).first() is not None,
             }
             l.append(cmt)
 
         return JsonResponse({'comments':l})
+    
 def ext_vi_kws(text):
     with open('./static/vietnamese-stopwords.txt',encoding='utf-8') as file:
         stopwords = file.read().splitlines()
@@ -438,6 +435,7 @@ def recommend_posts(request):
     rec_posts = {}
     for kw in kws:
         posts = Post.objects.filter(Q(title__icontains=kw) | Q(caption__icontains=kw))
+        
         for p in posts:
             occur_count = p.caption.count(kw) + p.title.count(kw)
             if p not in rec_posts:
@@ -454,7 +452,7 @@ def recommend_posts(request):
             'caption':post.caption,
             'subject':post.subject,
             'created_at':post.created_at,
-            'user':post.user,
+            'user':post.user.username,
             'no_of_comments':post.no_of_comments,
         }
         if post.subject == subject:
