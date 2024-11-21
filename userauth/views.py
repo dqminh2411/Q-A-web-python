@@ -13,7 +13,7 @@ from django.forms.models import model_to_dict
 from pyvi import ViPosTagger, ViTokenizer
 from rake_nltk import Rake
 import spacy
-from langdetect import detect
+from langdetect import detect, LangDetectException
 def signup(request):
     try:
         if request.method == 'POST':
@@ -72,11 +72,20 @@ def home(request):
     except Profile.DoesNotExist: # nếu người dùng chưa có proflie thì tạo mới (thường là admin)
         profile = Profile.objects.create(user=request.user)
         profile.save()
-
     
-    # Lấy tất cả các bài viết, sắp xếp theo lượt vote giảm dần (no_of_likes)
-    posts = Post.objects.all().order_by('-no_of_likes')
-    
+    # Lấy tất cả các bài viết của người mà user đang follow, sắp xếp theo thời gian từ mới đến cũ 
+    followers_qs = Followers.objects.filter(follower = request.user)
+    # người dùng hiện tại có follow ai đó
+    if followers_qs.first():
+        # lấy danh sách người mà người dùng hiện tại follow
+        followings = followers_qs.values_list('user',flat=True) # flat=True: list thuần, k có tuple 
+        # lấy những posts đăng bởi những người đc follow
+        posts_by_followings = list(Post.objects.filter(user__in = followings).order_by('-created_at'))
+        # lấy những posts của người còn lại
+        posts_by_others = list(Post.objects.exclude(user__in=followings).order_by('-created_at'))
+        posts = posts_by_followings + posts_by_others
+    else:
+        posts = Post.objects.all().order_by('-created_at')
 
     # Truyền dữ liệu vào context để hiển thị trong template
     context = {
@@ -88,12 +97,11 @@ def home(request):
 
 
 def explore(request):
-    post = Post.objects.all().order_by('-created_at')
+    post = Post.objects.all().order_by('-no_of_likes')
     profile = Profile.objects.get(user=request.user)
     context = {
         'posts': post,
         'profile': profile
-
     }
     return render(request, 'explore.html', context)
 
@@ -330,26 +338,27 @@ def delete_post(request, post_id):
     return redirect('/profile/'+request.user.username)
 
     
-def edit_comment(request,cmt_id):
-    comment = Comment.objects.get(id=cmt_id)
-    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-        comment.content = request.POST.get('newContent')
+def edit_comment(request):
+    if request.method == 'POST':
+        cmt_id = request.POST['cmt_id']
+        comment = Comment.objects.get(id=cmt_id)
+        comment.content = request.POST['newContent']
         comment.save()
         return JsonResponse({'cmtContent':comment.content})
     
-def delete_comment(request,cmt_id):
-    comment = Comment.objects.get(id=cmt_id)
-    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+def delete_comment(request):
+    if request.method == 'POST':
+        cmt_id = request.POST['cmt_id']
+        comment = Comment.objects.get(id=cmt_id)
         comment.delete()
         return JsonResponse({})
-    return HttpResponse()
+    
 
-def like_comment(request,cmt_id):
-    comment = Comment.objects.get(id=cmt_id)
-    like_filter = LikeComment.objects.filter(comment=comment,user=request.user).first()
-    # if request.method == 'GET':
-    #     return JsonResponse({'no_of_likes':comment.no_of_likes, 'liked':like_filter is not None})
+def like_comment(request):
     if request.method == 'POST':
+        cmt_id = request.POST['cmt_id']
+        comment = Comment.objects.get(id=cmt_id)
+        like_filter = LikeComment.objects.filter(comment=comment,user=request.user).first()
         if like_filter is None:
             comment.no_of_likes += 1
             LikeComment.objects.create(comment=comment, user=request.user)
@@ -422,16 +431,22 @@ def recommend_posts(request):
     title = data.get('title')
     print(caption, subject, title)
     kws = set()
-    if title:
-        if detect(title) == 'en':
-            kws |= ext_en_kws(title)
-        else:
-            kws |= ext_vi_kws(title)
-    if caption:
-        if detect(caption) == 'en':
-            kws |= ext_en_kws(caption)
-        else:
-            kws |= ext_vi_kws(caption)
+    try:
+        if title:
+            if detect(title) == 'en':
+                kws |= ext_en_kws(title)
+            else:
+                kws |= ext_vi_kws(title)
+    except LangDetectException:
+        pass
+    try:
+        if caption:
+            if detect(caption) == 'en':
+                kws |= ext_en_kws(caption)
+            else:
+                kws |= ext_vi_kws(caption)
+    except LangDetectException: # xay ra khi noi dung k chua text (ki tu)
+        pass
 
     kws = list(kws)
     rec_posts = {}

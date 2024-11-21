@@ -27,3 +27,6 @@
 #     return kws
 
 # print(list(ext_vi_kws('Về quy luật hình thành Đảng cộng sản Việt Nam, Hồ Chí Minh viết: chủ nghĩa Mác-Lênin kết hợp với phong trào công nhân và phong trào yêu nước đã dẫn tới việc thành lập Đảng cộng sản Đông Dương vào đầu năm 1930. Hãy phân tích sự sáng tạo của Người trong luận điểm trên.')))
+from langdetect import detect
+
+print(detect('*&@'))

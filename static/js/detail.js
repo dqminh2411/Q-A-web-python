@@ -319,10 +319,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 const commentId = parseInt(commentDiv.id.split('-')[1]);
                 $.ajax({
                     type:'POST',
-                    url:`/comment/edit/${commentId}/`,
+                    url:`/comment/edit/`,
                     data:{
                         'csrfmiddlewaretoken':csrf[0].value,
                         'newContent':newContent,
+                        'cmt_id': commentId,
                     },
                     success: function(response){
                         commentText.textContent = response.cmtContent;
@@ -348,9 +349,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 const commentId = parseInt(delCmtForm.id.split('-')[3]);
                 $.ajax({
                     type:'POST',
-                    url:`/comment/delete/${commentId}/`,
+                    url:`/comment/delete/`,
                     data:{
                         'csrfmiddlewaretoken':csrf[0].value,
+                        'cmt_id':commentId,
                     },
                     success: function(response){
                         const commentDiv = document.getElementById(`comment-${commentId}`)
@@ -445,30 +447,6 @@ document.addEventListener('DOMContentLoaded', function() {
         })
     }
     loadCmts();
-    // // comment like count
-    // function loadCmtLikes(){
-    //     const cmtLikeBtns = document.querySelectorAll('.like-cmt-btn');
-    //     cmtLikeBtns.forEach(btn =>{
-    //         const cmtId = parseInt(btn.id.split('-')[2]);
-    //         $.ajax({
-    //             type:'GET',
-    //             url: `/comment/like/${cmtId}`,
-    //             success: function(response){
-    //                 if(response.liked){
-    //                     btn.textContent = `Unlike (${response.no_of_likes})`;
-    //                 }
-    //                 else {
-    //                     btn.textContent =  `Like (${response.no_of_likes})`;
-    //                 }
-    //             },
-    //             error: function(error){
-    //                 console.log(error)
-    //             }
-    //         })
-    //     })
-    // }
-    // loadCmtLikes();
-    // like comment form
     function likeCmt(){
         const likeCmtForms = document.querySelectorAll('.like-cmt-form');
         likeCmtForms.forEach(form =>{
@@ -480,9 +458,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 const likeCmtBtn = document.getElementById(`like-cmt-${cmtId}`);
                 $.ajax({
                     type:'POST',
-                    url:`/comment/like/${cmtId}`,
+                    url:`/comment/like/`,
                     data:{
                         'csrfmiddlewaretoken': csrf_token,
+                        'cmt_id':cmtId,
                     },
                     success: function(response){
                         if(response.liked){
