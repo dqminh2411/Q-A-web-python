@@ -91,7 +91,7 @@ def explore(request):
     post = Post.objects.all().order_by('-created_at')
     profile = Profile.objects.get(user=request.user)
     context = {
-        'post': post,
+        'posts': post,
         'profile': profile
 
     }
@@ -206,6 +206,7 @@ def profile(request,id_user):
         'follow_unfollow':follow_unfollow,
         'user_followers': user_followers,
         'user_following': user_following,
+
     }
     
     
@@ -290,12 +291,13 @@ def search_by_subject(request):
     profile = Profile.objects.get(user=request.user)  # Get the user's profile
 
     # Filter posts based on the subject
-    posts = Post.objects.filter(subject__icontains=query).order_by('-created_at')
+    posts = Post.objects.filter(subject__iexact=query).order_by('-created_at')
 
     context = {
-        'post': posts,  # Pass the filtered posts to the template
+        'posts': posts,  # Pass the filtered posts to the template
         'profile': profile,
         'query': query,  # Pass the search query for display
+        'num':posts.count(),
     }
     return render(request, 'explore.html', context)  # Render the explore template
 

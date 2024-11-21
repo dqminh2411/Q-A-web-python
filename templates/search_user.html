@@ -6,67 +6,79 @@
     <title>Search User or Post</title>
     <!-- Thêm Bootstrap CSS từ CDN -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://kit.fontawesome.com/cb792c0850.js" crossorigin="anonymous"></script>
 </head>
 <body>
-<h1 class="text-center my-4">Search Results for "{{ query }}"</h1>
-<div class="container">
+    
+    <div class="mt-3" style="width: 60%; justify-self: center; display: flexbox;">
+        <form method="get" action="{% url 'search_results' %}">
+            <div class="input-group rounded">
+                <input type="text" name="q" placeholder="Search users and posts" class="form-control rounded"
+                    aria-label="Search" aria-describedby="search-addon" />
+                <button type="submit" class="input-group-text border-0" id="search-addon">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+    <h1 class="text-center my-4">Search Results for "{{ query }}"</h1>
+    <div class="container">
 
-    <h2 class="mb-3">User Profiles</h2>
-    <div class="row">
-        <div class="col-md-12">
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th>Username</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for user in users %}
-                    <!-- user is Profile -->
+        <h2 class="mb-3">User Profiles ({{users|length}})</h2>
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table table-striped">
+                    <thead>
                     <tr>
-                        <td>
-                            <h5><strong><a
-                                    href="/profile/{{ user.user.username }}">@{{ user.user.username }}</a></strong></h5>
-                        </td>
+                        <th>Username</th>
                     </tr>
-                {% empty %}
+                    </thead>
+                    <tbody>
+                    {% for user in users %}
+                        <!-- user is Profile -->
+                        <tr>
+                            <td>
+                                <h5><strong><a
+                                        href="/profile/{{ user.user.username }}">@{{ user.user.username }}</a></strong></h5>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td class="text-muted">No users found.</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <h2 class="mt-5 mb-3">Posts ({{ posts|length }})</h2>
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table table-striped">
+                    <thead>
                     <tr>
-                        <td class="text-muted">No users found.</td>
+                        <th>Title</th>
+                        <th>Caption</th>
                     </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                    {% for post in posts %}
+                        <tr>
+                            <td>
+                                <h5><strong><a href="/postdetail/{{ post.id }}">{{ post.title }}</a></strong></h5>
+                            </td>
+                            <td>{{ post.caption }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="2" class="text-muted">No posts found.</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-
-    <h2 class="mt-5 mb-3">Posts</h2>
-    <div class="row">
-        <div class="col-md-12">
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th>Title</th>
-                    <th>Caption</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for post in posts %}
-                    <tr>
-                        <td>
-                            <h5><strong><a href="/postdetail/{{ post.id }}">{{ post.title }}</a></strong></h5>
-                        </td>
-                        <td>{{ post.caption }}</td>
-                    </tr>
-                {% empty %}
-                    <tr>
-                        <td colspan="2" class="text-muted">No posts found.</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
-
 </body>
 </html>

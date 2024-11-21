@@ -143,6 +143,16 @@ document.addEventListener('DOMContentLoaded', function(){
                 console.error(error);
             })
     })
+    
+    const searchForm = document.getElementById('search-form');
+    searchForm.addEventListener('submit', e=>{
+        e.preventDefault();
+        console.log('do');
+        const query = searchForm.querySelector('input[name="q"]').value; 
+        const url = `${searchForm.action}?q=${encodeURIComponent(query)}`;
+        window.open(url,'_blank');
+    })
+    
 })
 function getCookie(name) {
     let cookieValue = null;
