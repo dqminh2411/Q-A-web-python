@@ -19,10 +19,10 @@ class Profile(models.Model):
 class Post(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     user = models.ForeignKey(User,to_field='username',on_delete=models.CASCADE)
-    title = models.TextField(null=True, blank=True)
+    title = models.TextField(default='')
     file = models.FileField(upload_to='uploads/', null=True, blank=True)  # Sử dụng FileField cho tất cả loại file
-    caption = models.TextField()
-    subject = models.CharField(max_length=50, default="HDT")
+    caption = models.TextField(default='')
+    subject = models.CharField(max_length=50,default='')
     created_at = models.DateTimeField(default=datetime.now)
     no_of_likes = models.IntegerField(default=0)
 
@@ -51,7 +51,7 @@ class Followers(models.Model):
 class Comment(models.Model):
     post = models.ForeignKey(Post, related_name="comments", on_delete=models.CASCADE)
     user = models.ForeignKey(User, related_name='comments',to_field='username',on_delete=models.CASCADE)
-    content = models.TextField()
+    content = models.TextField(default='')
     created_at = models.DateTimeField(default=datetime.now)
     no_of_likes = models.IntegerField(default=0)
     def __str__(self):
