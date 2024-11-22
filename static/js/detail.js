@@ -326,7 +326,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         'cmt_id': commentId,
                     },
                     success: function(response){
-                        commentText.textContent = response.cmtContent;
+                        commentText.innerHTML = response.cmtContent.replace(/\n/g,'<br>');
                     
                         editForm.style.display = 'none';
                         commentText.style.display = 'block';
@@ -391,7 +391,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                     <div class="comment-content-container">
                                         <!-- noi dung comment -->
                                         <p cmt-id="${cmt.id}" class="mb-2 comment-text"
-                                            style="margin-left: 15px;">${cmt.content}</p>
+                                            style="margin-left: 15px;">${cmt.content.replace(/\n/g,'<br>')}</p>
                                         <!-- like or unlike comment -->
                                         <form method="post" class="like-cmt-form" cmt-id="${cmt.id}">
                                             

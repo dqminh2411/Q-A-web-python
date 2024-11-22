@@ -1,5 +1,5 @@
-{% load custom_filters %}
-{% load static %}
+{% load custom_filters %} <!--load custom_filters.py tu templatetags-->
+{% load static %} <!-- load static template tags de tao path cho file static-->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -95,9 +95,9 @@
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
             
             {% include "search.html" %}
-            {% include "profile_upload.html" %}
-            <!-- Home posts code -->
-            <div>
+            {% include "post_modals.html" %}
+    <!-- Home posts code -->
+    <div>
     {% for pos in posts %}
         <div class="container mb-4" id="{{ pos.id }}">
             <div class="row">
@@ -142,13 +142,6 @@
                                     <button type="submit" class="btn btn-outline-primary like-unlike-btn" id="like-unlike-{{pos.id}}">Unlike ({{pos.no_of_likes}})</button>
                                 </form>
                                 
-                                <!-- {% if pos.no_of_likes == 0 %}
-                                    <p id="no-like">0</p>
-                                {% elif pos.no_of_likes == 1 %}
-                                    <p id="one-like">Voted by {{ pos.no_of_likes }} person</p>
-                                {% else %}
-                                    <p id="many-likes">Voted by {{ pos.no_of_likes }} people</p>
-                                {% endif %} -->
                             </div>
                         </div>
                     </div>
@@ -195,5 +188,4 @@
 </script>
 <script src="{% static 'js/all.js' %}"></script>
 </body>
-
 </html>

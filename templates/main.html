@@ -95,7 +95,7 @@
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
             
             {% include "search.html" %}
-            {% include "profile_upload.html" %}
+            {% include "post_modals.html" %}
 <!-- Home posts code -->
 <div>
     {% for pos in posts %}
@@ -142,13 +142,6 @@
                                     <button type="submit" class="btn btn-outline-primary like-unlike-btn" id="like-unlike-{{pos.id}}"></button>
                                 </form>
                                 
-                                <!-- {% if pos.no_of_likes == 0 %}
-                                    <p id="no-like">0</p>
-                                {% elif pos.no_of_likes == 1 %}
-                                    <p id="one-like">Voted by {{ pos.no_of_likes }} person</p>
-                                {% else %}
-                                    <p id="many-likes">Voted by {{ pos.no_of_likes }} people</p>
-                                {% endif %} -->
                             </div>
                         </div>
                     </div>

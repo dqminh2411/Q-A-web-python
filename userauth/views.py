@@ -17,13 +17,13 @@ from langdetect import detect, LangDetectException
 def signup(request):
     try:
         if request.method == 'POST':
-            fnm=request.POST.get('fnm')
+            username=request.POST.get('username')
             emailid=request.POST.get('emailid')
             pwd=request.POST.get('pwd')
-            print(fnm,emailid,pwd)
-            my_user=User.objects.create_user(fnm,emailid,pwd)
+            print(username,emailid,pwd)
+            my_user=User.objects.create_user(username,emailid,pwd)
             my_user.save()
-            user_model = User.objects.get(username=fnm)
+            user_model = User.objects.get(username=username)
             new_profile = Profile.objects.create(user=user_model)
             new_profile.save()
             if my_user is not None:
@@ -42,10 +42,10 @@ def signup(request):
 def loginn(request):
  
     if request.method == 'POST':
-        fnm=request.POST.get('fnm')
+        username=request.POST.get('username')
         pwd=request.POST.get('pwd')
-        print(fnm,pwd)
-        userr=authenticate(request,username=fnm,password=pwd)
+        print(username,pwd)
+        userr=authenticate(request,username=username,password=pwd)
         if userr is not None:
             print('có user', userr)
             login(request,userr)
@@ -89,7 +89,7 @@ def home(request):
 
     # Truyền dữ liệu vào context để hiển thị trong template
     context = {
-        'posts': posts,  # Chuyển đổi từ 'post' thành 'posts' vì giờ có nhiều bài viết hơn
+        'posts': posts, 
         'profile': profile,
     }
     return render(request, 'main.html', context)
@@ -139,11 +139,8 @@ def likes(request, id):
 
         post.save()
 
-        # Generate the URL for the current post's detail page
         print(post.id)
 
-        # Redirect back to the post's detail page
-        # return redirect('/#'+id)
         return JsonResponse({'no_of_likes': post.no_of_likes, 'liked': like_filter is None})
 
 def liked_posts(request):
@@ -165,8 +162,6 @@ def postdetail(request, post_id):
     # Lấy thông tin hồ sơ của người dùng hiện tại
     profile = Profile.objects.get(user=request.user)
 
-    # # Lấy danh sách các bình luận liên quan đến bài viết
-    # comments = post.comments.all().order_by('-created_at')
 
     # Xử lý khi người dùng gửi bình luận
     if request.method == 'POST':
@@ -181,7 +176,6 @@ def postdetail(request, post_id):
     context = {
         'post': post,
         'profile': profile,
-        # 'comments': comments,  # Truyền danh sách bình luận vào template
     }
     return render(request, 'postdetail.html', context)
 
@@ -245,13 +239,6 @@ def profile(request,id_user):
             return render(request, 'profile.html', context)
     return render(request, 'profile.html', context)
 
-# @login_required(login_url='/loginn')
-# def delete(request, id):
-#     post = Post.objects.get(id=id)
-#     post.delete()
-
-#     return redirect('/profile/'+ request.user.username)
-
 
 @login_required(login_url='/loginn')
 def search_results(request):
@@ -265,7 +252,7 @@ def search_results(request):
         'users': users,
         'posts': posts,
     }
-    return render(request, 'search_user.html', context)
+    return render(request, 'search_result.html', context)
 def home_post(request,id):
     post=Post.objects.get(id=id)
     profile = Profile.objects.get(user=request.user)
@@ -381,7 +368,7 @@ def get_sorted_comments(request,post_id, crit):
             cmt = {
                 'id':x.id,
                 'user':x.user.username,
-                'content':x.content.replace('\n','<br>'),
+                'content':x.content,
                 'created_at':x.created_at,
                 'no_of_likes':x.no_of_likes,
                 'liked': LikeComment.objects.filter(user=request.user,comment=x).first() is not None,
@@ -399,7 +386,7 @@ def ext_vi_kws(text):
     rake.extract_keywords_from_text(text)
     phr_no_stopwords = rake.get_ranked_phrases()
     kws = set()
-    kw_tags = ['N','Ny','Np','M'] # N: danh từ, Ny: danh từ viết tắt, Np: tên riêng, M: số
+    kw_tags = ['N','Ny','Np'] # N: danh từ, Ny: danh từ viết tắt, Np: tên riêng, M: số
     for phr in phr_no_stopwords:
         if len(phr.split()) > 4:
             tks = ViTokenizer.tokenize(text[text.lower().index(phr):text.lower().index(phr)+len(phr)]) # Chuyển câu thành các token từ
@@ -417,11 +404,13 @@ def ext_vi_kws(text):
 def ext_en_kws(text):
     nlp = spacy.load("en_core_web_sm")
     kws = set()
-    kws_tags = ['NOUN','NUM','PROPN'] # NOUN: danh từ, NUM: số, PROPN: tên riêng
+    kws_tags = ['NOUN','PROPN'] # NOUN: danh từ, NUM: số, PROPN: tên riêng
+    special_marks = "@#$%&*\\|~^`_=+-/><"
     doc = nlp(text)
     for token in doc:
-        if token.pos_ in kws_tags and not token.is_stop:
+        if token.pos_ in kws_tags and (not token.is_stop) and (not token.is_punct) and (not token.text in special_marks):
             kws.add(token.text)
+    print(kws)
     return kws
 
 def recommend_posts(request):
@@ -433,20 +422,20 @@ def recommend_posts(request):
     kws = set()
     try:
         if title:
-            if detect(title) == 'en':
-                kws |= ext_en_kws(title)
-            else:
+            if detect(title) == 'vi':
                 kws |= ext_vi_kws(title)
-    except LangDetectException:
-        pass
+            else:
+                kws |= ext_en_kws(title)
+    except LangDetectException: #xay ra khi noi dung k chua text (ki tu)
+        return JsonResponse({'error': 'Invalid input. Your title and caption must contain Vietnamese or English text.'})
     try:
         if caption:
-            if detect(caption) == 'en':
-                kws |= ext_en_kws(caption)
-            else:
+            if detect(caption) == 'vi':
                 kws |= ext_vi_kws(caption)
-    except LangDetectException: # xay ra khi noi dung k chua text (ki tu)
-        pass
+            else:
+                kws |= ext_en_kws(caption)
+    except LangDetectException: 
+        return JsonResponse({'error': 'Invalid input. Your title and caption must contain Vietnamese or English text.'})
 
     kws = list(kws)
     rec_posts = {}

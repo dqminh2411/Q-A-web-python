@@ -161,7 +161,7 @@
             
             
             {% include "search.html" %}
-            {% include "profile_upload.html" %}
+            {% include "post_modals.html" %}
             <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
                 <div class="container mt-4">
                     <div class="row justify-content-center">
@@ -253,73 +253,6 @@
                                 </div>
                                 
                                 <div id="comments-section">
-                                    <!-- {% if post.comments.exists %}
-                                    {% for comment in post.comments.all %}
-                                    
-                                    <div class="comment p-3 mb-3"
-                                        style="border: 1px solid #e3e3e3; border-radius: 10px; background-color: #f9f9f9;"
-                                        id="comment-{{comment.id}}">
-                                        
-                                        <h5 class="mb-1">
-                                            <a href="/profile/{{ comment.user }}"
-                                                style="text-decoration: none; font-weight: bold;">
-                                                @{{ comment.user}}
-                                            </a>
-                                        </h5>
-                                        <div class="comment-content-container">
-                                            noi dung comment
-                                            <p cmt-id="{{comment.id}}" class="mb-2 comment-text"
-                                                style="margin-left: 15px;">{{ comment.content }}</p>
-                                            like or unlike comment
-                                            <form method="post" class="like-cmt-form" cmt-id="{{comment.id}}">
-                                                {% csrf_token %}
-                                                <button type="submit" class="btn btn-outline-primary like-cmt-btn" id="like-cmt-{{comment.id}}"></button>
-                                            </form>
-                                            form chinh sua comment
-                                            <div class="edit-form" style="display: none;">
-                                                <textarea class="form-control mb-2">{{ comment.content }}</textarea>
-                                                <button class="btn btn-secondary btn-sm cancel-edit">Cancel</button>
-                                                <button type="submit" class="btn btn-primary btn-sm save-edit">Save</button>
-                                            </div>
-                                        </div>
-                                        <div class="d-flex justify-content-between">
-                                            <small class="text-muted">{{ comment.created_at|date:"Y-m-d H:i" }}</small>
-                                        </div>
-
-                                        {% if user.username == comment.user %}
-                                            <button class="edit-comment" style="border:none; background: none;"><i
-                                                class="fas fa-edit"></i></button>
-                                            delete comment modal
-                                            <div class="modal fade" id="deleteCommentModal-{{comment.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                                <div class="modal-dialog">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h1 class="modal-title fs-5" id="exampleModalLabel"><strong>Delete Comment</strong></h1>
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            Are you sure to delete this comment?
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <form id="delete-comment-form-{{comment.id}}" class="delete-comment-form">
-                                                                {% csrf_token %}
-                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-bs-target="#deleteCommentModal-{{comment.id}}">Cancel</button>
-                                                                <button type="submit" class="btn btn-danger del-cmt-btn" >Delete</button>
-                                                            </form>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <button  style="border:none; background: none;"
-                                                data-bs-toggle="modal" data-bs-target="#deleteCommentModal-{{comment.id}}">
-                                                <i class="fa-solid fa-trash"></i></button>
-                                        {% endif %}
-                                    </div>
-                                    {% empty %}
-                                    <p>No comments yet.</p>
-                                    {% endfor %}
-                                    {% endif %} -->
                                 </div>
 
                                 <!-- Form thêm bình luận -->
@@ -333,18 +266,6 @@
                                     </button>
                                 </form>
 
-                                <!-- form update binh luan
-                            
-                            <form method="POST" class="mt-3" id="update-cmt-form" style="display: none;">
-                                {% csrf_token %}
-                                <textarea name="content" id="update-content" rows="3" class="form-control mb-3"
-                                          placeholder="Write a comment..."
-                                          style="border-radius: 10px; padding: 10px;" ></textarea>
-                                <button id="cancel-cmt-btn" type="submit" class="btn btn-secondary" style="border-radius: 10px; display: none;">Cancel
-                                </button>
-                                <button  type="submit" class="btn btn-danger" style="border-radius: 10px;">Submit
-                                </button>
-                            </form> -->
                             </div>
 
                         </div>

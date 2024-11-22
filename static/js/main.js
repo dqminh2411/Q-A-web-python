@@ -1,5 +1,7 @@
 const csrf = document.getElementsByName('csrfmiddlewaretoken');
 document.addEventListener('DOMContentLoaded', function(){
+    // Like, unlike posts
+    // Check xem người dùng hiện tại đã like bài viết chưa
     const likeBtns = document.querySelectorAll('.like-unlike-btn');
     likeBtns.forEach(btn =>{
         const postId = btn.id.substring(12); // like-unlike-{{post.id}}
@@ -21,6 +23,7 @@ document.addEventListener('DOMContentLoaded', function(){
         
     })
 
+    // thực hiện like, unlike
     const LikeUnlikeForms = document.querySelectorAll('.like-unlike-form');
     LikeUnlikeForms.forEach(form =>{
         form.addEventListener('submit', function(e){
